@@ -9,10 +9,10 @@ Tujuan: jadi basis desain siap-pakai untuk website lain (struktur, komponen,
 styling, font, animasi), yang nanti di-adaptasi (teks, warna brand, gambar
 produk, link) oleh instance Claude Code/Codex lain di project baru.
 
-## Manifest isi folder
+## Manifest isi repo
 
 ```
-design-system-export/
+dvn-collagen-design-system/   (root repo ini)
 ├── config/
 │   ├── astro.config.mjs     # Astro 5 + adapter Cloudflare (output: static)
 │   ├── package.json          # dependency + versi persis

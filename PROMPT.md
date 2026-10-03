@@ -18,33 +18,21 @@ utuh dan project bisa jalan (`npm run dev`) tanpa error.
 
 ## Sumber
 
-Clone (atau sparse-checkout) repo ini ke folder sementara, HANYA folder
-`design-system-export/`:
+Repo ini public, cukup clone biasa ke folder sementara:
 
 ```bash
-git clone --filter=blob:none --no-checkout <GANTI: URL repo GitHub, misal https://github.com/raygads04-ads/diviniaskin-space.git> /tmp/design-source
-cd /tmp/design-source
-git sparse-checkout init --cone
-git sparse-checkout set design-system-export
-git checkout main
-```
-
-Kalau `sparse-checkout` tidak tersedia/gagal, clone biasa saja lalu kerja
-hanya di dalam folder `design-system-export/`:
-
-```bash
-git clone <GANTI: URL repo> /tmp/design-source
+git clone https://github.com/rayagads03-ads/dvn-collagen-design-system.git /tmp/design-source
 ```
 
 Semua instruksi di bawah mengasumsikan sumbernya ada di
-`/tmp/design-source/design-system-export/`. Baca dulu `README.md` di
-dalam folder itu — berisi manifest lengkap isi folder dan daftar bagian
-yang WAJIB diadaptasi (tracking Google Ads, Zaraz consent, atribusi WA,
-klaim BPOM/Halal, domain hardcoded). JANGAN skip bagian itu.
+`/tmp/design-source/`. Baca dulu `README.md` di root repo itu — berisi
+manifest lengkap isinya dan daftar bagian yang WAJIB diadaptasi (tracking
+Google Ads, Zaraz consent, atribusi WA, klaim BPOM/Halal, domain
+hardcoded). JANGAN skip bagian itu.
 
 ## Yang harus kamu lakukan, urut
 
-1. **Baca `/tmp/design-source/design-system-export/README.md` lebih dulu**
+1. **Baca `/tmp/design-source/README.md` lebih dulu**
    sebelum menyalin apapun. Pahami struktur dan daftar "WAJIB diadaptasi".
 
 2. **Cek stack project saya saat ini** — apakah sudah ada Astro ter-install,
