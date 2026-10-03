@@ -1,0 +1,191 @@
+---
+// ================================================================
+// /cek-keaslian-dvn/ — first-party authenticity guide (GEO-003)
+//
+// Independent search intent ("cara cek DVN asli", "DVN palsu") that the
+// homepage only covers as a carousel. Uses the same first-party photos and
+// step data as the homepage section (src/data/dvnAuthenticitySlides.json),
+// plus the label facts and what to do when verification fails.
+// Every fact here is visible on the box label photographed in step 2.
+// ================================================================
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import slides from '../data/dvnAuthenticitySlides.json';
+
+export const prerender = true;
+
+const SITE_URL = 'https://wellnesbeauty.com/';
+const canonicalURL = `${SITE_URL}cek-keaslian-dvn/`;
+
+const meta = {
+  title: 'Cara Cek DVN Collagen Asli — QR Wellous & BPOM | DVN X RAYA',
+  description: 'Panduan bergambar memeriksa keaslian DVN Collagen: kemasan, nomor POM SD235042031, stiker hologram QR Wellous, hasil verifikasi, dan segel botol.',
+};
+
+const waLink = `/api/wa?cta=keaslian_page&from=${encodeURIComponent('/cek-keaslian-dvn/')}&msg=${encodeURIComponent('Halo kak, saya ingin cek keaslian produk DVN')}`;
+
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${canonicalURL}#webpage`,
+      "url": canonicalURL,
+      "name": meta.title,
+      "description": meta.description,
+      "isPartOf": { "@id": `${SITE_URL}#website` },
+      "about": { "@id": `${SITE_URL}#product` },
+      "breadcrumb": { "@id": `${canonicalURL}#breadcrumb` },
+      "primaryImageOfPage": `${SITE_URL}${slides[0].image.replace(/^\//, '')}`,
+      "inLanguage": "id-ID"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${canonicalURL}#breadcrumb`,
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Beranda", "item": SITE_URL },
+        { "@type": "ListItem", "position": 2, "name": "Cara Cek Keaslian DVN", "item": canonicalURL }
+      ]
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonicalURL={canonicalURL}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+  </Fragment>
+
+  <article class="auth-guide">
+    <nav class="auth-guide__crumbs" aria-label="Breadcrumb"><a href="/">Beranda</a> › <span>Cara Cek Keaslian DVN</span></nav>
+    <h1>Cara Cek Keaslian DVN Collagen</h1>
+    <p class="auth-guide__lead">
+      DVN Collagen asli memakai stiker hologram Wellous berkode QR yang dapat diverifikasi, dan terdaftar di BPOM dengan nomor
+      <strong>POM SD235042031</strong>. Lakukan 7 pemeriksaan berikut saat paket Anda terima. Semua foto diambil langsung dari produk DVN yang kami jual.
+    </p>
+
+    <ol class="auth-guide__steps">
+      {slides.map((slide, index) => (
+        <li class="auth-guide__step" id={slide.id}>
+          <img
+            src={slide.imageSmall}
+            srcset={`${slide.imageSmall} 400w, ${slide.image} ${slide.width}w`}
+            sizes="(max-width: 480px) 40vw, 200px"
+            alt={slide.alt}
+            width={slide.width}
+            height={slide.height}
+            loading={index < 2 ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+          <div>
+            <h2><span>Langkah {index + 1}.</span> {slide.title}</h2>
+            <p>{slide.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <h2>Informasi yang Tertera di Label Kemasan</h2>
+    <dl class="auth-guide__facts">
+      <div><dt>Nama produk</dt><dd>DVN Chewable Tablet (suplemen kesehatan)</dd></div>
+      <div><dt>Nomor izin edar</dt><dd>POM SD235042031</dd></div>
+      <div><dt>Sertifikat halal</dt><dd>ID00410012348610323</dd></div>
+      <div><dt>Isi</dt><dd>60 tablet kunyah per botol</dd></div>
+      <div><dt>Aturan pakai</dt><dd>2 kali sehari, 1 tablet kunyah</dd></div>
+      <div><dt>Diproduksi oleh</dt><dd>PT Setia Kawan Abadi, Jakarta</dd></div>
+      <div><dt>Didistribusikan oleh</dt><dd>PT Ous Nusantara Indonesia, Jakarta</dd></div>
+      <div><dt>Sertifikasi fasilitas</dt><dd>Logo GMP Certified pada label belakang</dd></div>
+    </dl>
+
+    <h2>Jika Hasil Pemeriksaan Meragukan</h2>
+    <ul>
+      <li><strong>Jangan konsumsi</strong> produk bila segel botol rusak, stiker hologram tidak ada, atau halaman verifikasi tidak menampilkan status berhasil.</li>
+      <li>Bila halaman verifikasi menunjukkan QR sudah pernah diverifikasi berkali-kali padahal box baru Anda buka, simpan foto kemasan dan hubungi kami.</li>
+      <li>Produk rusak saat diterima diganti sesuai <a href="/refund/">kebijakan pengembalian</a>: laporkan maksimal 24 jam setelah paket diterima, disertai foto atau video.</li>
+    </ul>
+
+    <h2>Verifikasi dari Sumber Resmi</h2>
+    <ul>
+      <li><a href="https://cekbpom.pom.go.id/" target="_blank" rel="noopener">Cek nomor POM SD235042031 di situs BPOM</a></li>
+      <li><a href="https://www.wellous.com/product-verification" target="_blank" rel="noopener">Halaman verifikasi produk Wellous</a></li>
+    </ul>
+
+    <div class="auth-guide__cta">
+      <a class="auth-guide__button" href={waLink} rel="nofollow">Minta Bantuan Cek Keaslian via WhatsApp</a>
+      <p>Konsultasi gratis · CS aktif 24 jam · <a href="/">Kembali ke informasi DVN Collagen</a></p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .auth-guide {
+    max-width: 720px;
+    margin: 16px auto 64px;
+    padding: 16px 20px;
+    color: #1a1a1a;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .auth-guide__crumbs { color: #705965; font-size: 13px; }
+  .auth-guide__crumbs a { color: #c2185b; }
+  .auth-guide h1 {
+    margin: 12px 0 12px;
+    color: #c2185b;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 34px;
+    line-height: 1.15;
+  }
+  .auth-guide > h2 {
+    margin: 36px 0 12px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 24px;
+    line-height: 1.25;
+  }
+  .auth-guide__lead { margin: 0 0 20px; }
+  .auth-guide__steps { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+  .auth-guide__step {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(194, 24, 91, .12);
+    border-radius: 16px;
+    background: #fff7fa;
+  }
+  .auth-guide__step img { width: 100%; height: auto; border-radius: 12px; }
+  .auth-guide__step h2 { margin: 0 0 4px; font-size: 17px; line-height: 1.3; }
+  .auth-guide__step h2 span { color: #c2185b; }
+  .auth-guide__step p { margin: 0; font-size: 14px; }
+  .auth-guide__facts { display: grid; gap: 0; margin: 0; border: 1px solid rgba(194, 24, 91, .15); border-radius: 14px; overflow: hidden; }
+  .auth-guide__facts div { display: grid; grid-template-columns: 170px 1fr; gap: 12px; padding: 10px 14px; border-bottom: 1px solid rgba(194, 24, 91, .1); }
+  .auth-guide__facts div:last-child { border-bottom: 0; }
+  .auth-guide__facts dt { color: #705965; font-size: 14px; }
+  .auth-guide__facts dd { margin: 0; font-weight: 600; }
+  .auth-guide ul { padding-left: 20px; }
+  .auth-guide li { margin-bottom: 8px; }
+  .auth-guide a { color: #c2185b; text-decoration: underline; }
+  .auth-guide__cta { margin-top: 32px; text-align: center; }
+  .auth-guide__cta p { margin-top: 10px; color: #6b7280; font-size: 13px; }
+  .auth-guide .auth-guide__button {
+    display: inline-block;
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: #25d366;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, .3);
+  }
+  @media (max-width: 480px) {
+    .auth-guide h1 { font-size: 30px; }
+    .auth-guide__step { grid-template-columns: 110px 1fr; gap: 12px; }
+    .auth-guide__facts div { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "cod-testimoni-01",
+    "title": "Dokumentasi COD #01",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Paket dicek langsung",
+    "duration": "01:19",
+    "isoDuration": "PT1M19S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-01-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-01-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-01.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  },
+  {
+    "id": "cod-testimoni-02",
+    "title": "Dokumentasi COD #02",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Buka sebelum bayar",
+    "duration": "00:57",
+    "isoDuration": "PT57S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-02-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-02-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-02.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  },
+  {
+    "id": "cod-testimoni-03",
+    "title": "Dokumentasi COD #03",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Cek paket di tempat",
+    "duration": "01:17",
+    "isoDuration": "PT1M17S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-03-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-03-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-03.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  },
+  {
+    "id": "cod-testimoni-04",
+    "title": "Dokumentasi COD #04",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Paket diterima aman",
+    "duration": "00:50",
+    "isoDuration": "PT50S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-04-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-04-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-04.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  },
+  {
+    "id": "cod-testimoni-05",
+    "title": "Dokumentasi COD #05",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Box DVN terlihat jelas",
+    "duration": "00:10",
+    "isoDuration": "PT10S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-05-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-05-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-05.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  },
+  {
+    "id": "cod-testimoni-06",
+    "title": "Dokumentasi COD #06",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Unboxing produk",
+    "duration": "00:25",
+    "isoDuration": "PT25S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-06-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-06-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-06.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  },
+  {
+    "id": "cod-testimoni-07",
+    "title": "Dokumentasi COD #07",
+    "subtitle": "Video asli pelanggan",
+    "claim": "Paket dibuka sendiri",
+    "duration": "01:30",
+    "isoDuration": "PT1M30S",
+    "poster": "/videos/cod-testimoni/cod-testimoni-07-poster.webp",
+    "preview": "/videos/cod-testimoni/previews/cod-testimoni-07-preview.webp",
+    "video": "/videos/cod-testimoni/cod-testimoni-07.mp4",
+    "uploadDate": "2026-09-24T13:12:37+07:00"
+  }
+]

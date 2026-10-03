@@ -46,14 +46,24 @@ hardcoded). JANGAN skip bagian itu.
    - `src/layouts/BaseLayout.astro` → `src/layouts/`
    - Semua file di `src/components/*.astro` → `src/components/`
    - `src/lib/is-bot.ts` → `src/lib/`
+   - Semua file di `src/data/*.json` → `src/data/` (WAJIB — 3 komponen
+     meng-import file ini langsung: `dvnFaq.json`, `dvnAuthenticitySlides.json`,
+     `dvnTestimonialVideos.json`. Tanpa ini, build akan error "module not found")
    - `src/pages/dvn/collagen/dvncollagen/index.astro` → simpan sebagai
      referensi di `src/pages/_reference-landing-page.astro` (JANGAN jadi
      route aktif dulu — ini cuma contoh cara komponen-komponen di atas
      dikomposisi bersama)
+   - `src/pages/cek-keaslian-dvn.astro` → simpan sebagai referensi di
+     `src/pages/_reference-cek-keaslian.astro` (JANGAN jadi route aktif
+     dulu — contoh komposisi halaman step-by-step cek keaslian)
    - Semua isi `public/fonts/` → `public/fonts/`
    - Semua isi `public/images/dvn/` → `public/images/dvn/`
    - `public/images/og-dvn-collagen-2026-09.jpg` → `public/images/`
    - Semua isi `public/videos/cod-testimoni/` → `public/videos/cod-testimoni/`
+   - Semua isi `public/cek-keaslian/` → `public/cek-keaslian/` (foto
+     close-up bukti keaslian, di-reference oleh `dvnAuthenticitySlides.json`)
+   - `public/favicon.svg`, `public/favicon-48.png`, `public/apple-touch-icon.png`
+     → `public/` (di-reference `BaseLayout.astro`)
 
 4. **Install dependency yang sama** (lihat `/tmp/design-source/config/package.json`
    untuk versi persis): `astro@^5.0.0`, `@astrojs/cloudflare@^12.0.0`,
@@ -74,12 +84,14 @@ hardcoded). JANGAN skip bagian itu.
    `DVNReferenceLandingPage.astro` mengimpor komponen lain di dalam folder
    ini — kalau iya, pastikan ikut tersalin).
 
-7. **Lakukan checklist "WAJIB diadaptasi" dari README** satu per satu,
-   dan untuk SETIAP item, tanyakan ke saya dulu apa nilai penggantinya
-   SEBELUM kamu ubah kode — jangan menebak Conversion ID, nomor WA, atau
-   domain. Khusus soal klaim BPOM/Halal/regulasi: jangan hapus atau ubah
-   sendiri, cukup tandai dengan komentar `<!-- TODO: cek compliance -->` dan
-   laporkan ke saya daftar lokasinya.
+7. **Lakukan checklist "WAJIB diadaptasi" dari README (ada 8 poin)** satu
+   per satu, dan untuk SETIAP item, tanyakan ke saya dulu apa nilai
+   penggantinya SEBELUM kamu ubah kode — jangan menebak Conversion ID,
+   nomor WA, atau domain. Khusus soal klaim BPOM/Halal/regulasi (termasuk
+   isi `dvnFaq.json`) dan section cek-keaslian hologram Wellous (poin 7 & 8
+   di README): jangan hapus atau ubah sendiri, cukup tandai dengan komentar
+   `<!-- TODO: cek compliance -->` / `<!-- TODO: relevan untuk brand ini? -->`
+   dan laporkan ke saya daftar lokasinya.
 
 8. **Jangan commit dulu.** Setelah semua jalan di `npm run dev` dan
    checklist adaptasi sudah saya isi, tunjukkan ringkasan: file apa yang

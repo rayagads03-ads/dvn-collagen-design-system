@@ -1,0 +1,79 @@
+[
+  {
+    "id": "kemasan-dvn",
+    "label": "FOTO",
+    "title": "Kenali kemasan DVN",
+    "description": "Box merah muda dan botol berisi 60 tablet kunyah bertuliskan DVN Chewable Tablet dan Health Supplement.",
+    "image": "/cek-keaslian/dvn-keaslian-01-kemasan-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-01-kemasan-400w.webp",
+    "width": 720,
+    "height": 900,
+    "alt": "Box dan botol DVN Chewable Tablet asli berwarna merah muda, tampak depan"
+  },
+  {
+    "id": "label-bpom-gmp",
+    "label": "FOTO",
+    "title": "Cek nomor BPOM di label belakang",
+    "description": "Pastikan tertulis POM SD235042031, logo GMP, produsen PT Setia Kawan Abadi, dan distributor PT Ous Nusantara Indonesia.",
+    "image": "/cek-keaslian/dvn-keaslian-02-label-bpom-gmp-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-02-label-bpom-gmp-400w.webp",
+    "width": 720,
+    "height": 900,
+    "alt": "Label belakang box DVN dengan logo GMP, nama produsen dan distributor, serta nomor POM SD235042031"
+  },
+  {
+    "id": "lokasi-hologram",
+    "label": "FOTO",
+    "title": "Temukan stiker hologram Wellous",
+    "description": "Stiker hologram Wellous berkode QR terdapat di sisi box, bertuliskan Scratch & Scan www.wellous.id.",
+    "image": "/cek-keaslian/dvn-keaslian-03-lokasi-hologram-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-03-lokasi-hologram-400w.webp",
+    "width": 720,
+    "height": 900,
+    "alt": "Sisi box DVN dengan stiker hologram Wellous berkode QR di bagian bawah"
+  },
+  {
+    "id": "pindai-qr",
+    "label": "FOTO",
+    "title": "Gosok lalu pindai kode QR",
+    "description": "Gosok lapisan perak pada stiker, lalu pindai kode QR dengan kamera ponsel untuk membuka halaman verifikasi Wellous.",
+    "image": "/cek-keaslian/dvn-keaslian-04-hologram-qr-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-04-hologram-qr-400w.webp",
+    "width": 720,
+    "height": 900,
+    "alt": "Close-up stiker hologram Wellous dengan kode QR dan tulisan Scratch & Scan www.wellous.id"
+  },
+  {
+    "id": "hasil-verifikasi",
+    "label": "FOTO",
+    "title": "Pastikan status Successful",
+    "description": "Halaman verifikasi Wellous menampilkan “Your purchase is original” dan berapa kali QR sudah diverifikasi. Jika QR box baru sudah pernah diverifikasi orang lain, hubungi kami.",
+    "image": "/cek-keaslian/dvn-keaslian-05-verifikasi-berhasil-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-05-verifikasi-berhasil-400w.webp",
+    "width": 736,
+    "height": 920,
+    "alt": "Tampilan halaman verifikasi Wellous dengan status Successful dan keterangan Your purchase is original"
+  },
+  {
+    "id": "segel-botol",
+    "label": "FOTO",
+    "title": "Periksa segel botol",
+    "description": "Tutup botol bersegel bertuliskan Sealed for Your Protection. Jangan konsumsi bila segel sudah rusak saat diterima.",
+    "image": "/cek-keaslian/dvn-keaslian-06-segel-botol-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-06-segel-botol-400w.webp",
+    "width": 720,
+    "height": 900,
+    "alt": "Segel tutup botol DVN bertuliskan Sealed for Your Protection dan tablet merah muda di dalam botol"
+  },
+  {
+    "id": "bentuk-tablet",
+    "label": "FOTO",
+    "title": "Kenali bentuk tablet",
+    "description": "Tablet kunyah berbentuk bulat, berwarna merah muda, dengan cetakan logo di permukaannya.",
+    "image": "/cek-keaslian/dvn-keaslian-07-bentuk-tablet-720w.webp",
+    "imageSmall": "/cek-keaslian/dvn-keaslian-07-bentuk-tablet-400w.webp",
+    "width": 480,
+    "height": 600,
+    "alt": "Satu tablet kunyah DVN berbentuk bulat berwarna merah muda dengan cetakan logo"
+  }
+]

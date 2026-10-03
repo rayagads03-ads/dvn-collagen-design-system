@@ -9,10 +9,10 @@ Tujuan: jadi basis desain siap-pakai untuk website lain (struktur, komponen,
 styling, font, animasi), yang nanti di-adaptasi (teks, warna brand, gambar
 produk, link) oleh instance Claude Code/Codex lain di project baru.
 
-## Manifest isi repo
+## Manifest isi folder
 
 ```
-dvn-collagen-design-system/   (root repo ini)
+design-system-export/
 ├── config/
 │   ├── astro.config.mjs     # Astro 5 + adapter Cloudflare (output: static)
 │   ├── package.json          # dependency + versi persis
@@ -29,17 +29,32 @@ dvn-collagen-design-system/   (root repo ini)
 │   │   └── SiteFooterLinks.astro          (44 baris)
 │   ├── lib/
 │   │   └── is-bot.ts
-│   └── pages/dvn/collagen/dvncollagen/index.astro   # contoh komposisi lengkap
+│   ├── data/
+│   │   ├── dvnFaq.json                 # 10 Q&A FAQ (dipakai DVNReferenceLandingPage)
+│   │   ├── dvnAuthenticitySlides.json  # 7 step cek-keaslian (dipakai DVNAuthenticitySection + halaman cek-keaslian-dvn)
+│   │   └── dvnTestimonialVideos.json   # metadata 7 video testimoni (dipakai DVNVideoTestimonials)
+│   └── pages/
+│       ├── dvn/collagen/dvncollagen/index.astro   # contoh komposisi landing page lengkap
+│       └── cek-keaslian-dvn.astro                  # contoh komposisi halaman cek-keaslian (step-by-step)
 ├── public/
+│   ├── favicon.svg, favicon-48.png, apple-touch-icon.png   # di-reference BaseLayout
 │   ├── fonts/            # 4 file woff2 (variable font subset)
 │   ├── images/
 │   │   ├── dvn/hero2/...        # icon svg, model webp, product-stage webp
 │   │   ├── dvn/reference2/...   # badge, consultant, decor, ingredients, trust
 │   │   └── og-dvn-collagen-2026-09.jpg
-│   └── videos/cod-testimoni/    # 7× mp4 + poster webp + preview webp (~34MB)
+│   ├── videos/cod-testimoni/    # 7× mp4 + poster webp + preview webp (~34MB)
+│   └── cek-keaslian/     # 7 foto close-up bukti keaslian, 2 ukuran tiap foto (14 file, ~244KB)
 ```
 
-Total 89 file, ~39MB.
+Total 108 file, ~39MB.
+
+> **Update 2026-10-03:** manifest awal sempat melewatkan `src/data/*.json`,
+> `src/pages/cek-keaslian-dvn.astro`, foto `public/cek-keaslian/`, dan 3
+> favicon — karena pencarian aset pertama hanya mencari path berawalan
+> `/images/`, `/videos/`, `/fonts/`, sementara aset-aset ini berawalan
+> `/cek-keaslian/` atau langsung di root `public/`. Sudah ditambahkan;
+> daftar di atas sudah final.
 
 ## Dependency & versi (dari package.json asli)
 
@@ -94,6 +109,17 @@ data akan nyasar ke akun Ads/analytics yang salah:
    (`/privacy-policy/`, `/terms/`, dll) yang TIDAK ikut di-export folder ini
    (itu halaman konten, bukan design system). Project baru harus punya
    halaman-halaman itu sendiri atau link-nya diubah.
+7. **`src/data/dvnFaq.json`** — 10 Q&A berisi nomor BPOM (`SD235042031`),
+   nomor Halal (`ID00410012348610323`), dan klaim regulasi spesifik DVN.
+   Sama seperti poin 4: untuk produk/kategori lain, konten ini harus
+   ditulis ulang total, bukan cuma cari-ganti nama brand.
+8. **`src/data/dvnAuthenticitySlides.json`** + foto `public/cek-keaslian/` —
+   7 step "cara cek keaslian" yang menjelaskan hologram Wellous & verifikasi
+   `wellous.id`. Ini terikat ke sistem anti-pemalsuan Wellous — kalau brand
+   baru tidak memakai sistem hologram Wellous, seluruh section ini (data +
+   foto + komponen `DVNAuthenticitySection.astro` + halaman
+   `cek-keaslian-dvn.astro`) kemungkinan tidak relevan dan sebaiknya dilepas,
+   bukan diadaptasi.
 
 ## Cara pakai (ringkas)
 
