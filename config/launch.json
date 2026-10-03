@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dvn-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 4321
+    },
+    {
+      "name": "dvn-workers-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "dev", "--port", "8787"],
+      "port": 8787
+    },
+    {
+      "name": "dvn-dist-static",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["-e", "const http=require('http'),fs=require('fs'),path=require('path');const D='/Users/oldyrayprayogo/Documents/Projects/wellous/campaigns/diviniaskin-space/dist';const T={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.png':'image/png','.jpg':'image/jpeg','.xml':'application/xml','.txt':'text/plain'};http.createServer((q,r)=>{const u=decodeURIComponent(q.url.split('?')[0]);if(u.startsWith('/api/')){r.writeHead(404);return r.end();}let p=path.join(D,u);if(u.endsWith('/'))p=path.join(p,'index.html');let s=200;if(!fs.existsSync(p)){p=path.join(D,'404.html');s=404;}r.writeHead(s,{'Content-Type':T[path.extname(p)]||'application/octet-stream'});fs.createReadStream(p).pipe(r);}).listen(8790,'127.0.0.1');"],
+      "port": 8790
+    }
+  ]
+}

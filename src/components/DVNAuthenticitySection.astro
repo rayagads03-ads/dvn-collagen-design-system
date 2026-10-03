@@ -1,0 +1,441 @@
+---
+import slides from '../data/dvnAuthenticitySlides.json';
+const deferredPixel = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1 1%22/%3E';
+---
+
+<section class="dvn-authenticity" id="dvn-keaslian" aria-labelledby="dvn-authenticity-title" data-dvn-authenticity>
+  <div class="dvn-authenticity__bubble dvn-authenticity__bubble--top" aria-hidden="true"></div>
+  <div class="dvn-authenticity__bubble dvn-authenticity__bubble--bottom" aria-hidden="true"></div>
+  <img class="dvn-authenticity__flower" src={deferredPixel} data-src="/images/dvn/reference2/decor/flowers-right.png" data-poster-lazy="true" alt="" width="310" height="275" loading="lazy" decoding="async" />
+  <img class="dvn-authenticity__petal dvn-authenticity__petal--one" src={deferredPixel} data-src="/images/dvn/reference2/decor/petal-1.png" data-poster-lazy="true" alt="" width="154" height="146" loading="lazy" decoding="async" />
+  <img class="dvn-authenticity__petal dvn-authenticity__petal--two" src={deferredPixel} data-src="/images/dvn/reference2/decor/petal-2.png" data-poster-lazy="true" alt="" width="148" height="140" loading="lazy" decoding="async" />
+
+  <header class="dvn-authenticity__heading">
+    <p class="dvn-authenticity__kicker"><span aria-hidden="true"></span>Keaslian Produk</p>
+    <h2 id="dvn-authenticity-title">Cara Cek <br />Keaslian D.V.N</h2>
+    <p class="dvn-authenticity__hint">Geser untuk melihat <span aria-hidden="true">→</span></p>
+  </header>
+
+  <div class="dvn-authenticity__viewport" data-auth-viewport tabindex="0" aria-label="Langkah pemeriksaan keaslian produk DVN">
+    <div class="dvn-authenticity__track">
+      {slides.map((slide, index) => (
+        <article class="dvn-authenticity-card" data-auth-card data-index={index} id={`dvn-auth-${slide.id}`}>
+          <div class="dvn-authenticity-card__media">
+            <span class="dvn-authenticity-card__chip">{slide.label}</span>
+            <img
+              src={slide.imageSmall}
+              srcset={`${slide.imageSmall} 400w, ${slide.image} ${slide.width}w`}
+              sizes="(max-width: 480px) 81vw, 330px"
+              alt={slide.alt}
+              width={slide.width}
+              height={slide.height}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="dvn-authenticity-card__caption">
+            <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{slide.title}</h3>
+              <p>{slide.description}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <div class="dvn-authenticity__controls">
+    <button type="button" aria-label="Langkah sebelumnya" data-auth-prev>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+    </button>
+    <div class="dvn-authenticity__dots" role="group" aria-label="Pilih langkah pemeriksaan">
+      {slides.map((slide, index) => (
+        <button
+          class:list={{ 'is-active': index === 0 }}
+          type="button"
+          aria-label={`Lihat langkah ${index + 1}: ${slide.title}`}
+          aria-current={index === 0 ? 'true' : undefined}
+          data-auth-dot={index}
+        ></button>
+      ))}
+    </div>
+    <button type="button" aria-label="Langkah berikutnya" data-auth-next>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+    </button>
+  </div>
+
+  <p class="dvn-authenticity__note">
+    Jika detail produk atau hasil pemindaian meragukan, jangan lanjutkan penggunaan dan hubungi konsultan untuk bantuan pengecekan.
+    Foto di atas diambil langsung dari produk DVN yang kami jual.
+    <a href="/cek-keaslian-dvn/">Panduan lengkap cek keaslian DVN</a>
+    <a href="https://www.wellous.com/product-verification" target="_blank" rel="noopener">Halaman verifikasi produk Wellous</a>
+    <a href="https://cekbpom.pom.go.id/" target="_blank" rel="noopener">Cek nomor BPOM di cekbpom.pom.go.id</a>
+  </p>
+</section>
+
+<style>
+  .dvn-authenticity {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 43px 0 48px;
+    scroll-margin-top: 18px;
+    border-bottom: 1px solid rgba(216, 27, 101, .11);
+    background:
+      radial-gradient(circle at 52% 24%, rgba(255, 255, 255, .98) 0 25%, rgba(255, 249, 252, .86) 48%, transparent 72%),
+      linear-gradient(180deg, #fff8fb 0%, #fff1f7 76%, #fde8f1 100%);
+    color: #544357;
+  }
+
+  .dvn-authenticity::before {
+    position: absolute;
+    right: -9%;
+    bottom: -95px;
+    left: -9%;
+    z-index: -2;
+    height: 190px;
+    border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+    background:
+      radial-gradient(ellipse at 40% 0, rgba(255, 255, 255, .86), transparent 54%),
+      linear-gradient(164deg, rgba(255, 255, 255, .84), rgba(250, 207, 224, .55));
+    content: '';
+    transform: rotate(-3deg);
+  }
+
+  .dvn-authenticity__heading {
+    position: relative;
+    z-index: 2;
+    padding: 0 42px;
+  }
+
+  .dvn-authenticity__kicker {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 14px;
+    color: #b67a2d;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+  }
+
+  .dvn-authenticity__kicker span {
+    width: 70px;
+    height: 1px;
+    background: #c88b3b;
+  }
+
+  .dvn-authenticity__heading h2 {
+    max-width: 600px;
+    margin: 0;
+    color: #d11660;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(54px, 10.2vw, 76px);
+    font-weight: 600;
+    line-height: .84;
+    letter-spacing: -.045em;
+  }
+
+  .dvn-authenticity__hint {
+    margin: 17px 0 25px;
+    color: #795362;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .dvn-authenticity__hint span { margin-left: 5px; color: #aa5a78; font-size: 25px; }
+
+  .dvn-authenticity__viewport {
+    position: relative;
+    z-index: 2;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    /* No CSS scroll-behavior: smooth here. With mandatory snapping, the
+       initial snap alignment during page load became an animated scroll,
+       and Chrome stops recording Largest Contentful Paint on scroll — the
+       homepage reported no LCP at all. Prev/next/dot buttons still animate
+       via scrollIntoView({ behavior: 'smooth' }) in the script below. */
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .dvn-authenticity__viewport::-webkit-scrollbar { display: none; }
+
+  .dvn-authenticity__track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    padding: 0 42px 8px;
+  }
+
+  .dvn-authenticity-card {
+    flex: 0 0 auto;
+    width: min(69vw, 500px);
+    overflow: hidden;
+    scroll-snap-align: start;
+    border: 1px solid rgba(216, 27, 101, .2);
+    border-radius: 34px;
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 18px 42px rgba(196, 111, 148, .15);
+  }
+
+  .dvn-authenticity-card__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(216, 27, 101, .1);
+    background:
+      radial-gradient(circle at 50% 44%, #fff 0 44%, #fff7fa 100%);
+  }
+
+  .dvn-authenticity-card__media::after {
+    position: absolute;
+    inset: auto 0 0;
+    height: 15%;
+    background: linear-gradient(180deg, transparent, rgba(255, 247, 250, .55));
+    content: '';
+    pointer-events: none;
+  }
+
+  .dvn-authenticity-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .dvn-authenticity-card__chip {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    display: inline-flex;
+    min-width: 86px;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, .74);
+    border-radius: 999px;
+    background: rgba(253, 215, 230, .92);
+    color: #c0115b;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    box-shadow: 0 7px 18px rgba(142, 23, 70, .09);
+    backdrop-filter: blur(7px);
+  }
+
+  .dvn-authenticity-card__caption {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 15px;
+    min-height: 122px;
+    padding: 22px 24px 24px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(255, 241, 247, .94));
+  }
+
+  .dvn-authenticity-card__caption > span {
+    color: #c88b3b;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .dvn-authenticity-card__caption h3 {
+    margin: 0;
+    color: #862848;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .dvn-authenticity-card__caption p {
+    margin: 7px 0 0;
+    color: #6a5567;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .dvn-authenticity__controls {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .dvn-authenticity__controls > button {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgba(216, 27, 101, .16);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .82);
+    color: #b65076;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(196, 111, 148, .11);
+  }
+
+  .dvn-authenticity__controls > button:disabled { opacity: .36; cursor: default; }
+  .dvn-authenticity__controls svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+  .dvn-authenticity__dots { display: flex; align-items: center; justify-content: center; gap: 0; }
+  .dvn-authenticity__dots button {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .dvn-authenticity__dots button::after { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border-radius: 999px; background: #ebcfda; content: ''; transform: translate(-50%, -50%); transition: width .22s ease, background-color .22s ease; }
+  .dvn-authenticity__dots button.is-active::after { width: 31px; background: #c88b3b; }
+
+  .dvn-authenticity__note {
+    position: relative;
+    z-index: 2;
+    width: min(calc(100% - 84px), 580px);
+    margin: 19px auto 0;
+    padding: 12px 17px;
+    border: 1px solid rgba(216, 27, 101, .11);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .65);
+    color: #705564;
+    font-size: 10.5px;
+    line-height: 1.45;
+    text-align: center;
+  }
+  .dvn-authenticity__note a {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 4px 2px;
+    color: #c2185b;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .dvn-authenticity__flower,
+  .dvn-authenticity__petal,
+  .dvn-authenticity__bubble {
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .dvn-authenticity__flower { top: 34px; right: -48px; width: 230px; opacity: .33; }
+  .dvn-authenticity__petal--one { top: 24px; left: 15px; width: 72px; opacity: .34; transform: rotate(-24deg); }
+  .dvn-authenticity__petal--two { right: 31%; bottom: 58px; width: 61px; opacity: .25; transform: rotate(22deg); }
+  .dvn-authenticity__bubble {
+    border: 1px solid rgba(255, 255, 255, .78);
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 24%, rgba(255, 255, 255, .92), rgba(255, 194, 217, .18) 42%, rgba(235, 119, 164, .08) 67%, transparent 70%);
+    box-shadow: inset -9px -12px 18px rgba(224, 113, 155, .12), 0 12px 25px rgba(196, 111, 148, .08);
+  }
+  .dvn-authenticity__bubble--top { top: 30px; right: 31px; width: 114px; height: 114px; }
+  .dvn-authenticity__bubble--bottom { bottom: 12px; left: -32px; width: 105px; height: 105px; }
+
+  @media (max-width: 520px) {
+    .dvn-authenticity { padding: 35px 0 38px; scroll-margin-top: 10px; }
+    .dvn-authenticity__heading { padding: 0 22px; }
+    .dvn-authenticity__kicker { gap: 11px; margin-bottom: 11px; font-size: 10px; letter-spacing: .21em; }
+    .dvn-authenticity__kicker span { width: 42px; }
+    .dvn-authenticity__heading h2 { font-size: clamp(43px, 13.6vw, 57px); }
+    .dvn-authenticity__hint { margin: 13px 0 18px; font-size: 14px; }
+    .dvn-authenticity__hint span { font-size: 18px; }
+    .dvn-authenticity__track { gap: 13px; padding: 0 22px 7px; }
+    .dvn-authenticity-card { width: 81vw; max-width: 330px; border-radius: 25px; }
+    .dvn-authenticity-card__chip { top: 14px; left: 14px; min-width: 64px; min-height: 32px; font-size: 11px; }
+    .dvn-authenticity-card__caption { gap: 10px; min-height: 104px; padding: 16px 16px 18px; }
+    .dvn-authenticity-card__caption > span { font-size: 22px; }
+    .dvn-authenticity-card__caption h3 { font-size: 14px; }
+    .dvn-authenticity-card__caption p { margin-top: 5px; font-size: 12px; line-height: 1.4; }
+    .dvn-authenticity__controls { gap: 0; margin-top: 11px; }
+    .dvn-authenticity__controls > button { width: 44px; height: 44px; }
+    .dvn-authenticity__controls svg { width: 16px; height: 16px; }
+    .dvn-authenticity__dots { gap: 0; }
+    .dvn-authenticity__dots button { width: 44px; height: 44px; }
+    .dvn-authenticity__dots button::after { width: 7px; height: 7px; }
+    .dvn-authenticity__dots button.is-active::after { width: 21px; }
+    .dvn-authenticity__note { width: calc(100% - 44px); margin-top: 14px; padding: 12px 14px; font-size: 11.5px; }
+    .dvn-authenticity__flower { top: 58px; right: -61px; width: 165px; }
+    .dvn-authenticity__petal--one { top: 13px; left: -4px; width: 53px; }
+    .dvn-authenticity__bubble--top { top: 52px; right: -4px; width: 78px; height: 78px; }
+  }
+
+  /* SXO-004 readability floor (tablet/desktop). */
+  @media (min-width: 521px) {
+    .dvn-authenticity__note { font-size: 12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dvn-authenticity__viewport { scroll-behavior: auto; }
+    .dvn-authenticity__dots button::after { transition: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-dvn-authenticity]').forEach((section) => {
+    if (!(section instanceof HTMLElement) || section.dataset.ready === 'true') return;
+    section.dataset.ready = 'true';
+
+    const viewport = section.querySelector('[data-auth-viewport]');
+    const cards = Array.from(section.querySelectorAll('[data-auth-card]'));
+    const dots = Array.from(section.querySelectorAll('[data-auth-dot]'));
+    const previous = section.querySelector('[data-auth-prev]');
+    const next = section.querySelector('[data-auth-next]');
+    if (!(viewport instanceof HTMLElement) || !cards.length) return;
+
+    let activeIndex = 0;
+
+    const setActive = (index) => {
+      activeIndex = Math.max(0, Math.min(index, cards.length - 1));
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle('is-active', dotIndex === activeIndex);
+        if (dotIndex === activeIndex) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      if (previous instanceof HTMLButtonElement) previous.disabled = activeIndex === 0;
+      if (next instanceof HTMLButtonElement) next.disabled = activeIndex === cards.length - 1;
+    };
+
+    const goTo = (index) => {
+      const safeIndex = Math.max(0, Math.min(index, cards.length - 1));
+      const card = cards[safeIndex];
+      if (!(card instanceof HTMLElement)) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      setActive(safeIndex);
+    };
+
+    dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+    previous?.addEventListener('click', () => goTo(activeIndex - 1));
+    next?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    if ('IntersectionObserver' in window) {
+      const cardObserver = new IntersectionObserver((entries) => {
+        const visibleCard = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!(visibleCard?.target instanceof HTMLElement)) return;
+        setActive(cards.indexOf(visibleCard.target));
+      }, { root: viewport, threshold: [.55, .75] });
+      cards.forEach((card) => cardObserver.observe(card));
+    }
+
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') goTo(activeIndex - 1);
+      if (event.key === 'ArrowRight') goTo(activeIndex + 1);
+    });
+
+    setActive(0);
+  });
+</script>

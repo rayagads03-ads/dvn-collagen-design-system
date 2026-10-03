@@ -1,0 +1,591 @@
+---
+import videos from '../data/dvnTestimonialVideos.json';
+
+const pageCount = Math.ceil(videos.length / 2);
+const blankPoster = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 480 856%22%3E%3Crect width=%22480%22 height=%22856%22 fill=%22%23f8e7ee%22/%3E%3C/svg%3E';
+---
+
+<section class="dvn-video-proof" aria-labelledby="dvn-video-proof-title" data-dvn-video-section>
+  <div class="dvn-video-proof__leaf dvn-video-proof__leaf--left" aria-hidden="true"></div>
+  <div class="dvn-video-proof__leaf dvn-video-proof__leaf--right" aria-hidden="true"></div>
+
+  <div class="dvn-video-certifications" id="dvn-legalitas" aria-label="Legalitas produk DVN">
+    <article>
+      <span class="dvn-video-certifications__icon"><img src="/images/dvn/hero2/logo-bpom-80w.webp" alt="" width="80" height="74" loading="lazy" decoding="async" /></span>
+      <span><strong>BPOM RI</strong><small>NIE SD235042031</small></span>
+    </article>
+    <span class="dvn-video-certifications__divider" aria-hidden="true"></span>
+    <article>
+      <span class="dvn-video-certifications__icon"><img src="/images/dvn/hero2/logo-halal-80w.webp" alt="" width="53" height="80" loading="lazy" decoding="async" /></span>
+      <span><strong>HALAL</strong><small>No. ID00410012348610323</small></span>
+    </article>
+  </div>
+  <p class="dvn-video-certifications__verify">
+    <a href="https://cekbpom.pom.go.id/" target="_blank" rel="noopener">Cek NIE SD235042031 di situs BPOM ›</a>
+    <span aria-hidden="true"> · </span>
+    <a href="https://bpjph.halal.go.id/" target="_blank" rel="noopener">Cek sertifikat halal ID00410012348610323 di BPJPH ›</a>
+  </p>
+
+  <header class="dvn-video-proof__heading">
+    <div class="dvn-video-proof__ornament" aria-hidden="true"><span></span><b>♡</b><span></span></div>
+    <h2 id="dvn-video-proof-title">Mereka yang Percaya Pada DVN Collagen</h2>
+    <p>Dokumentasi COD asli pelanggan DVN Collagen · Bisa COD ke seluruh Indonesia · Cek dulu produk sebelum bayar</p>
+  </header>
+
+  <div class="dvn-video-carousel">
+    <button class="dvn-video-nav dvn-video-nav--prev" type="button" aria-label="Tampilkan video sebelumnya" data-video-prev>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+    </button>
+
+    <div class="dvn-video-viewport" data-video-viewport tabindex="0" aria-label="Galeri video dokumentasi pelanggan">
+      <div class="dvn-video-track">
+        {videos.map((item, index) => (
+          <article class="dvn-video-card" data-video-card data-index={index}>
+            <img
+              class="dvn-video-card__poster"
+              src={blankPoster}
+              alt={`Cuplikan ${item.title}: ${item.claim}`}
+              width="480"
+              height="856"
+              loading="lazy"
+              decoding="async"
+              data-src={item.poster}
+              data-poster-lazy="true"
+              data-video-poster
+              data-poster-src={item.poster}
+              data-preview-src={item.preview}
+            />
+            <video
+              class="dvn-video-card__media"
+              src={item.video}
+              preload="none"
+              playsinline
+              controls
+              data-src={item.video}
+              data-poster={item.poster}
+              aria-label={`${item.title}, ${item.claim}`}
+            ></video>
+            <time class="dvn-video-card__duration" datetime={item.isoDuration}>{item.duration}</time>
+            <button class="dvn-video-card__play" type="button" aria-label={`Putar ${item.title}`} data-video-play>
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11.5 8.5v15l12-7.5-12-7.5Z" /></svg>
+            </button>
+            <div class="dvn-video-card__meta">
+              <img src={blankPoster} data-src={item.poster} data-poster-lazy="true" alt="" width="48" height="48" loading="lazy" decoding="async" />
+              <span><strong>{item.title}</strong><small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.7 7-12A7 7 0 1 0 5 9c0 6.3 7 12 7 12Zm0-9.5A2.5 2.5 0 1 0 12 6a2.5 2.5 0 0 0 0 5.5Z" /></svg>{item.subtitle}</small></span>
+              <em>{item.claim}</em>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <button class="dvn-video-nav dvn-video-nav--next" type="button" aria-label="Tampilkan video berikutnya" data-video-next>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+    </button>
+  </div>
+
+  <div class="dvn-video-pagination" role="group" aria-label="Halaman galeri video">
+    {Array.from({ length: pageCount }, (_, index) => (
+      <button class:list={{ 'is-active': index === 0 }} type="button" aria-label={`Buka halaman video ${index + 1}`} aria-current={index === 0 ? 'true' : undefined} data-video-dot={index}></button>
+    ))}
+  </div>
+
+  <button class="dvn-video-quiz" type="button" data-quiz-open>
+    <span aria-hidden="true">✦</span>
+    <strong>Cek Kulitku Sekarang</strong>
+    <b aria-hidden="true">›</b>
+  </button>
+
+  <div class="dvn-video-assurances" aria-label="Keunggulan layanan">
+    <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H8l-4 4V4Zm4 5h8M8 12h5" /></svg>Gratis Konsultasi</span>
+    <i aria-hidden="true"></i>
+    <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v10H3V6Zm11 4h4l3 3v3h-7v-6ZM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>Bisa COD</span>
+    <i aria-hidden="true"></i>
+    <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Zm-3 8 2 2 4-4" /></svg>Privasi Terjaga</span>
+  </div>
+</section>
+
+<style>
+  .dvn-video-proof {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 18px 42px 25px;
+    border-top: 1px solid rgba(228, 74, 127, .14);
+    border-bottom: 1px solid rgba(228, 74, 127, .14);
+    background:
+      radial-gradient(circle at 50% 48%, rgba(255, 255, 255, .97) 0 35%, rgba(255, 246, 250, .82) 68%, transparent 100%),
+      linear-gradient(180deg, #fff8fb 0%, #fff0f6 100%);
+    color: #523744;
+  }
+
+  .dvn-video-proof::before,
+  .dvn-video-proof::after {
+    position: absolute;
+    z-index: -1;
+    width: 300px;
+    height: 110px;
+    border: 12px solid rgba(248, 180, 205, .28);
+    border-radius: 50%;
+    content: '';
+  }
+
+  .dvn-video-proof::before { right: -116px; bottom: 30px; transform: rotate(-18deg); }
+  .dvn-video-proof::after { left: -145px; bottom: -62px; transform: rotate(18deg); }
+
+  .dvn-video-proof__leaf {
+    position: absolute;
+    z-index: -1;
+    width: 138px;
+    height: 150px;
+    opacity: .28;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  .dvn-video-proof.is-nearby .dvn-video-proof__leaf { background-image: url('/images/dvn/reference2/decor/flowers-left.png'); }
+
+  .dvn-video-proof__leaf--left { left: -68px; top: 54px; }
+  .dvn-video-proof__leaf--right { right: -69px; top: 55px; transform: scaleX(-1); }
+
+  .dvn-video-certifications {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    align-items: center;
+    width: min(100%, 530px);
+    min-height: 72px;
+    margin: 0 auto 20px;
+    padding: 7px 20px;
+    border: 1px solid rgba(230, 38, 109, .12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .72);
+    box-shadow: 0 8px 24px rgba(176, 39, 88, .07);
+    backdrop-filter: blur(8px);
+  }
+
+  .dvn-video-certifications article {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .dvn-video-certifications__divider { width: 1px; height: 42px; background: #f09ab9; }
+
+  .dvn-video-certifications__icon {
+    display: grid;
+    flex: 0 0 47px;
+    width: 47px;
+    height: 47px;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #ffe8f0;
+  }
+
+  .dvn-video-certifications__icon img { width: 33px; height: 33px; object-fit: contain; }
+  .dvn-video-certifications article:last-child .dvn-video-certifications__icon img { width: 27px; height: 36px; }
+  .dvn-video-certifications strong { display: block; color: #a5104d; font-size: 16px; line-height: 1.1; }
+  .dvn-video-certifications small { display: block; margin-top: 3px; color: #69505d; font-size: 10.5px; white-space: nowrap; }
+  .dvn-video-certifications__verify {
+    position: relative;
+    z-index: 2;
+    margin: -12px 0 18px;
+    text-align: center;
+  }
+  .dvn-video-certifications__verify a {
+    display: inline-block;
+    padding: 6px 4px;
+    color: #a5104d;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .dvn-video-proof__heading { position: relative; z-index: 1; text-align: center; }
+  .dvn-video-proof__ornament { display: flex; align-items: center; justify-content: center; gap: 10px; color: #ff719f; }
+  .dvn-video-proof__ornament span { width: 88px; height: 1.5px; background: linear-gradient(90deg, transparent, #ff91b6); }
+  .dvn-video-proof__ornament span:last-child { transform: scaleX(-1); }
+  .dvn-video-proof__ornament b { font-size: 22px; font-weight: 500; }
+  .dvn-video-proof__heading h2 {
+    margin: 3px 0 3px;
+    color: #e5266d;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 39px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -.025em;
+  }
+  .dvn-video-proof__heading p { margin: 0; color: #5f4c57; font-size: 14px; }
+
+  .dvn-video-carousel { position: relative; margin-top: 18px; }
+  .dvn-video-viewport { overflow: hidden; border-radius: 20px; scroll-behavior: smooth; scrollbar-width: none; }
+  .dvn-video-viewport::-webkit-scrollbar { display: none; }
+  .dvn-video-track { display: flex; gap: 14px; }
+
+  .dvn-video-card {
+    position: relative;
+    flex: 0 0 calc((100% - 14px) / 2);
+    aspect-ratio: .72;
+    overflow: hidden;
+    scroll-snap-align: start;
+    border: 1px solid rgba(198, 59, 108, .15);
+    border-radius: 20px;
+    background: #2f2228;
+    box-shadow: 0 11px 25px rgba(137, 35, 75, .16);
+  }
+
+  .dvn-video-card::after {
+    position: absolute;
+    inset: 46% 0 0;
+    z-index: 2;
+    background: linear-gradient(180deg, transparent, rgba(30, 11, 20, .74));
+    content: '';
+    pointer-events: none;
+  }
+
+  .dvn-video-card__poster,
+  .dvn-video-card__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dvn-video-card__poster { transition: opacity .2s ease; }
+  .dvn-video-card.is-previewing .dvn-video-card__poster { opacity: .98; }
+  .dvn-video-card__media { z-index: 1; opacity: 0; background: #130c10; }
+  .dvn-video-card.is-playing .dvn-video-card__media { z-index: 5; opacity: 1; }
+  .dvn-video-card.is-playing::after,
+  .dvn-video-card.is-playing .dvn-video-card__duration,
+  .dvn-video-card.is-playing .dvn-video-card__play,
+  .dvn-video-card.is-playing .dvn-video-card__meta { opacity: 0; pointer-events: none; }
+
+  .dvn-video-card__duration {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(35, 23, 29, .76);
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .dvn-video-card__play {
+    position: absolute;
+    top: 43%;
+    left: 50%;
+    z-index: 4;
+    display: grid;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    place-items: center;
+    transform: translate(-50%, -50%);
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .96);
+    color: #dd0f60;
+    box-shadow: 0 9px 22px rgba(83, 22, 48, .24);
+    cursor: pointer;
+  }
+  .dvn-video-card__play svg { width: 27px; height: 27px; fill: currentColor; }
+
+  .dvn-video-card__meta {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 37px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+  }
+  .dvn-video-card__meta > img { width: 37px; height: 37px; border: 2px solid rgba(255,255,255,.88); border-radius: 50%; object-fit: cover; object-position: center 18%; }
+  .dvn-video-card__meta strong { display: block; overflow: hidden; font-size: 9.5px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .dvn-video-card__meta small { display: flex; align-items: center; gap: 3px; margin-top: 2px; font-size: 7px; }
+  .dvn-video-card__meta small svg { width: 8px; height: 8px; fill: currentColor; }
+  .dvn-video-card__meta em {
+    grid-column: 1 / -1;
+    justify-self: end;
+    margin-top: 1px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, #ffd6e4, #ff91bb);
+    color: #a80e4a;
+    font-size: 7.5px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .dvn-video-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 8;
+    display: grid;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 1px solid rgba(226, 38, 109, .13);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .94);
+    color: #e5266d;
+    box-shadow: 0 7px 18px rgba(151, 42, 82, .12);
+    cursor: pointer;
+  }
+  .dvn-video-nav:disabled { opacity: .38; cursor: default; }
+  .dvn-video-nav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.2; }
+  .dvn-video-nav--prev { left: -29px; }
+  .dvn-video-nav--next { right: -29px; }
+
+  .dvn-video-pagination { display: flex; justify-content: center; gap: 2px; margin: 0; }
+  .dvn-video-pagination button { position: relative; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+  .dvn-video-pagination button::after { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: #f7bfd2; content: ''; transform: translate(-50%, -50%); transition: width .2s ease, border-radius .2s ease, background .2s ease; }
+  .dvn-video-pagination button.is-active::after { width: 23px; border-radius: 999px; background: #d20d5a; }
+
+  .dvn-video-quiz {
+    display: grid;
+    grid-template-columns: 34px 1fr 38px;
+    align-items: center;
+    width: min(100%, 414px);
+    min-height: 57px;
+    margin: 0 auto;
+    padding: 5px 7px 5px 17px;
+    border: 2px solid #f65292;
+    border-radius: 999px;
+    background: linear-gradient(110deg, #f20f6b, #cd0051);
+    color: #fff;
+    box-shadow: 0 8px 19px rgba(204, 0, 78, .2), inset 0 1px rgba(255,255,255,.42);
+    cursor: pointer;
+  }
+  .dvn-video-quiz > span { color: #ffe670; font-size: 27px; }
+  .dvn-video-quiz strong { font-size: 17px; }
+  .dvn-video-quiz > b { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: #fff; color: #d80d5b; font-size: 27px; font-weight: 400; }
+
+  .dvn-video-assurances {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 15px;
+    color: #6a5260;
+    font-size: 10.5px;
+  }
+  .dvn-video-assurances span { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .dvn-video-assurances svg { width: 20px; height: 20px; fill: none; stroke: #df0d60; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+  .dvn-video-assurances i { width: 1px; height: 22px; background: #efadc4; }
+
+  @media (max-width: 520px) {
+    .dvn-video-proof { padding: 14px 24px 21px; }
+    .dvn-video-certifications { min-height: 61px; margin-bottom: 14px; padding: 6px 10px; }
+    .dvn-video-certifications article { gap: 7px; }
+    .dvn-video-certifications__icon { flex-basis: 37px; width: 37px; height: 37px; }
+    .dvn-video-certifications__icon img { width: 27px; height: 27px; }
+    .dvn-video-certifications article:last-child .dvn-video-certifications__icon img { width: 22px; height: 30px; }
+    .dvn-video-certifications strong { font-size: 12px; }
+    .dvn-video-certifications small { font-size: 7.5px; }
+    .dvn-video-certifications__divider { height: 35px; }
+    .dvn-video-proof__ornament span { width: 54px; }
+    .dvn-video-proof__heading h2 { font-size: 29px; }
+    .dvn-video-proof__heading p { font-size: 9.5px; }
+    .dvn-video-carousel { margin-top: 13px; }
+    .dvn-video-track { gap: 9px; }
+    .dvn-video-card { flex-basis: calc((100% - 9px) / 2); border-radius: 14px; }
+    .dvn-video-card__play { width: 47px; height: 47px; }
+    .dvn-video-card__play svg { width: 23px; height: 23px; }
+    .dvn-video-card__duration { top: 7px; right: 7px; padding: 4px 6px; font-size: 8px; }
+    .dvn-video-card__meta { right: 7px; bottom: 7px; left: 7px; grid-template-columns: 29px minmax(0,1fr); gap: 5px; }
+    .dvn-video-card__meta > img { width: 29px; height: 29px; }
+    .dvn-video-card__meta strong { font-size: 7.2px; }
+    .dvn-video-card__meta small { font-size: 5.6px; }
+    .dvn-video-card__meta em { padding: 4px 6px; font-size: 5.8px; }
+    .dvn-video-nav { width: 44px; height: 44px; }
+    .dvn-video-nav--prev { left: -19px; }
+    .dvn-video-nav--next { right: -19px; }
+    .dvn-video-pagination { gap: 0; margin: 0; }
+    .dvn-video-pagination button { width: 44px; height: 44px; }
+    .dvn-video-pagination button::after { width: 8px; height: 8px; }
+    .dvn-video-pagination button.is-active::after { width: 19px; }
+    .dvn-video-quiz { min-height: 48px; grid-template-columns: 27px 1fr 32px; padding-left: 13px; }
+    .dvn-video-quiz > span { font-size: 22px; }
+    .dvn-video-quiz strong { font-size: 14px; }
+    .dvn-video-quiz > b { width: 32px; height: 32px; font-size: 23px; }
+    .dvn-video-assurances { gap: 7px; margin-top: 12px; font-size: 7px; }
+    .dvn-video-assurances span { gap: 3px; }
+    .dvn-video-assurances svg { width: 15px; height: 15px; }
+    .dvn-video-assurances i { height: 16px; }
+
+    /* SXO-004 readability floor (mobile). The legal pill stacks so the
+       NIE and halal numbers fit at a readable size. */
+    .dvn-video-certifications { grid-template-columns: 1fr; gap: 6px; padding: 10px 16px; border-radius: 20px; }
+    .dvn-video-certifications article { justify-content: flex-start; }
+    .dvn-video-certifications__divider { display: none; }
+    .dvn-video-certifications strong { font-size: 13px; }
+    .dvn-video-certifications small { font-size: 11px; }
+    .dvn-video-proof__heading p { font-size: 12px; line-height: 1.45; }
+    .dvn-video-card__duration { font-size: 10px; }
+    .dvn-video-card__meta strong { overflow: visible; font-size: 11px; line-height: 1.2; white-space: normal; }
+    .dvn-video-card__meta small { font-size: 10px; }
+    .dvn-video-card__meta em { font-size: 10px; }
+    .dvn-video-assurances { flex-wrap: wrap; justify-content: center; font-size: 10.5px; }
+  }
+
+  /* SXO-004 readability floor (tablet/desktop). */
+  @media (min-width: 521px) {
+    .dvn-video-certifications small { font-size: 11px; }
+    .dvn-video-card__duration { font-size: 10.5px; }
+    .dvn-video-card__meta strong { font-size: 11.5px; }
+    .dvn-video-card__meta small { font-size: 10.5px; }
+    .dvn-video-card__meta em { font-size: 10.5px; }
+    .dvn-video-assurances { font-size: 11px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dvn-video-viewport { scroll-behavior: auto; }
+    .dvn-video-pagination button::after { transition: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-dvn-video-section]').forEach((section) => {
+    if (!(section instanceof HTMLElement) || section.dataset.ready === 'true') return;
+    section.dataset.ready = 'true';
+
+    const viewport = section.querySelector('[data-video-viewport]');
+    const cards = Array.from(section.querySelectorAll('[data-video-card]'));
+    const dots = Array.from(section.querySelectorAll('[data-video-dot]'));
+    const previous = section.querySelector('[data-video-prev]');
+    const next = section.querySelector('[data-video-next]');
+    if (!(viewport instanceof HTMLElement)) return;
+
+    const enableNearbyDecor = () => {
+      if (!('IntersectionObserver' in window)) {
+        section.classList.add('is-nearby');
+        return;
+      }
+      const sectionObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        section.classList.add('is-nearby');
+        sectionObserver.disconnect();
+      }, { rootMargin: '350px 0px', threshold: 0 });
+      sectionObserver.observe(section);
+    };
+    if (document.readyState === 'complete') enableNearbyDecor();
+    else window.addEventListener('load', enableNearbyDecor, { once: true });
+
+    const stopPreview = (card) => {
+      const poster = card.querySelector('[data-video-poster]');
+      const wasPreviewing = card.dataset.previewActive === 'true';
+      card.classList.remove('is-previewing');
+      delete card.dataset.previewActive;
+      if (wasPreviewing && poster instanceof HTMLImageElement && poster.dataset.posterSrc && poster.src !== new URL(poster.dataset.posterSrc, window.location.href).href) {
+        poster.src = poster.dataset.posterSrc;
+      }
+    };
+
+    const startPreview = (card) => {
+      const poster = card.querySelector('[data-video-poster]');
+      if (
+        !(poster instanceof HTMLImageElement) ||
+        !poster.dataset.previewSrc ||
+        card.classList.contains('is-playing') ||
+        card.dataset.previewActive === 'true'
+      ) return;
+
+      card.dataset.previewActive = 'true';
+      card.classList.add('is-previewing');
+      poster.src = poster.dataset.previewSrc;
+    };
+
+    const enablePreviewObserver = () => {
+      if (
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        navigator.connection?.saveData
+      ) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const card = entry.target;
+          if (!(card instanceof HTMLElement)) return;
+          if (entry.isIntersecting && entry.intersectionRatio >= .45) startPreview(card);
+          else stopPreview(card);
+        });
+      }, { threshold: [0, .45, .75] });
+
+      cards.forEach((card) => observer.observe(card));
+    };
+
+    const schedulePreviewObserver = () => {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(enablePreviewObserver, { timeout: 1500 });
+      else window.setTimeout(enablePreviewObserver, 450);
+    };
+
+    if (document.readyState === 'complete') schedulePreviewObserver();
+    else window.addEventListener('load', schedulePreviewObserver, { once: true });
+
+    const stopVideos = (except) => {
+      cards.forEach((card) => {
+        const video = card.querySelector('video');
+        if (video instanceof HTMLVideoElement && video !== except) {
+          video.pause();
+          card.classList.remove('is-playing');
+        }
+      });
+    };
+
+    const setPage = (page) => {
+      const safePage = Math.max(0, Math.min(page, dots.length - 1));
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === safePage);
+        if (index === safePage) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      if (previous instanceof HTMLButtonElement) previous.disabled = safePage === 0;
+      if (next instanceof HTMLButtonElement) next.disabled = safePage === dots.length - 1;
+      section.dataset.page = String(safePage);
+    };
+
+    const currentPage = () => Number(section.dataset.page || 0);
+    const goTo = (page) => {
+      const safePage = Math.max(0, Math.min(page, dots.length - 1));
+      stopVideos();
+      const targetCard = cards[Math.min(safePage * 2, cards.length - 1)];
+      if (targetCard instanceof HTMLElement) {
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
+      setPage(safePage);
+    };
+
+    cards.forEach((card) => {
+      const play = card.querySelector('[data-video-play]');
+      const video = card.querySelector('video');
+      if (!(play instanceof HTMLButtonElement) || !(video instanceof HTMLVideoElement)) return;
+      play.addEventListener('click', async () => {
+        stopPreview(card);
+        stopVideos(video);
+        if (!video.poster && video.dataset.poster) video.poster = video.dataset.poster;
+        if (!video.src) video.src = video.dataset.src || '';
+        card.classList.add('is-playing');
+        try { await video.play(); } catch { card.classList.remove('is-playing'); }
+        // GA4 via Cloudflare Zaraz (no-op when Zaraz is off).
+        try { window.zaraz?.track?.('video_play', { video_id: card.querySelector('[data-video-poster]')?.getAttribute('data-poster-src')?.split('/').pop()?.replace('-poster.webp', '') || card.getAttribute('data-index') || '' }); } catch {}
+      });
+      video.addEventListener('ended', () => card.classList.remove('is-playing'));
+    });
+
+    dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+    previous?.addEventListener('click', () => goTo(currentPage() - 1));
+    next?.addEventListener('click', () => goTo(currentPage() + 1));
+
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') goTo(currentPage() - 1);
+      if (event.key === 'ArrowRight') goTo(currentPage() + 1);
+    });
+
+    setPage(0);
+  });
+</script>

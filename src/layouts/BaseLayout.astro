@@ -1,0 +1,283 @@
+---
+// ================================================================
+// BaseLayout — HTML shell + SEO/OG meta (Phase 2.9)
+//
+// Used by:
+//   src/pages/index.astro                            (root SEO URL)
+//   src/pages/dvn/collagen/dvncollagen/index.astro   (Google Ads URL)
+//
+// All Props OPTIONAL with sensible defaults (backward-compatible).
+// canonical + og:url are rendered only when a page passes canonicalURL,
+// so pages that must not declare one (the 404 page) simply omit it.
+// Page-specific schema JSON-LD goes via the named "head" slot.
+//
+// Notes:
+// - GCLID capture script lives inside <DVNLandingPage> body, NOT here
+//   (Decision 2 / Option B — colocated with WA buttons).
+// - Google tag (gtag.js, AW-18467553912) added 2 Oct 2026 to clear the
+//   Google Ads "Situs Anda tidak memiliki tag Google" misconfiguration.
+//   Base tag only — no custom conversion events, since there is no closing
+//   flow wired to it yet. Offline conversion import from the GAS sheet
+//   ("DVN-Offline Sale Diviniaskin") remains the real conversion source and
+//   is unaffected by this tag. CSP updated in public/_headers to match.
+// - favicon.svg is a self-contained "D·V·N" monogram in public/.
+// ================================================================
+
+import SiteFooterLinks from '../components/SiteFooterLinks.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalURL?: string;
+  ogImage?: string;
+  ogType?: string;
+  robots?: string;
+  hideFooter?: boolean;
+  // Only pages that render the hero (root + Google Ads URL) should preload
+  // the hero model image; legal/utility pages never display it.
+  preloadHeroImage?: boolean;
+}
+
+const {
+  title = 'DVN Collagen Indonesia — Suplemen Kolagen Tablet Kunyah 7-in-1',
+  description = 'DVN Collagen — suplemen kolagen tablet kunyah 7-in-1 untuk membantu memelihara kesehatan kulit. Terdaftar BPOM SD235042031, bersertifikat Halal, COD Indonesia.',
+  canonicalURL,
+  ogImage = 'https://wellnesbeauty.com/images/og-dvn-collagen-2026-09.jpg',
+  ogType = 'website',
+  robots = 'index, follow',
+  // Pages that render <DVNReferenceLandingPage> already ship their own
+  // full <footer class="dvn-footer">, so this generic one would double up.
+  // Only legal/utility pages (about, kontak, privacy-policy, terms, refund)
+  // and the 404 page rely on this footer — they get the default (shown).
+  hideFooter = false,
+  preloadHeroImage = false
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+<head>
+  <!-- Google tag (gtag.js) — AW-18467553912. Must stay immediately after
+       <head> per Google's install instructions. Base tag only; see notes
+       in the frontmatter above for why. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18467553912"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-18467553912');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- SEO Primary Meta -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="DVN X RAYA" />
+  <meta name="robots" content={robots} />
+  {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+
+  <!-- Open Graph follows the canonical selected by each page. -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content={ogType} />
+  {canonicalURL && <meta property="og:url" content={canonicalURL} />}
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:alt" content="Foto asli box dan botol DVN Chewable Tablet dengan teks DVN Collagen, BPOM SD235042031, Halal, GMP" />
+  <meta property="og:site_name" content="DVN X RAYA" />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  <meta name="twitter:image:alt" content="Foto asli box dan botol DVN Chewable Tablet dengan teks DVN Collagen, BPOM SD235042031, Halal, GMP" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/favicon.svg" color="#e5266d" />
+
+  <!-- Sprint 2C.1: Self-hosted Google Fonts (eliminate render-blocking 1870ms from fonts.googleapis.com + fonts.gstatic.com) -->
+  <!-- Sprint 2C.2: Preload critical fonts (above-fold LCP) — break @font-face cascade dependency -->
+  <!-- Sprint 2C.3 Phase D: removed cormorant-garamond-500 preload (weight 500 normal unused — wasted bandwidth) -->
+  <!-- Sprint 2C.6 Phase C: realigned 700→600 (audit found .brand-mega 'D·V·N' uses weight 600, not 700) -->
+  <link rel="preload" href="/fonts/cormorant-garamond-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/plus-jakarta-sans-400.woff2" as="font" type="font/woff2" crossorigin />
+  <style>
+    /* Every file below is a variable font (Cormorant wght 300–700, Plus
+       Jakarta Sans wght 200–800). The former per-weight files were
+       byte-identical copies, so faces now share one URL per unique file:
+       the browser downloads 4 files instead of 10 and renders exactly the
+       same glyphs (same bytes, same weight descriptors). */
+    @font-face { font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 500; font-display: swap; src: url('/fonts/cormorant-garamond-600i.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 600; font-display: swap; src: url('/fonts/cormorant-garamond-600i.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/cormorant-garamond-600.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/cormorant-garamond-600.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/cormorant-garamond-600.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/plus-jakarta-sans-400.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/plus-jakarta-sans-400.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/plus-jakarta-sans-600.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/plus-jakarta-sans-600.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/plus-jakarta-sans-600.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+    /* Header + footer for legal/utility/404 pages (hidden on landing pages
+       via `.base-footer { display: none; }` and hideFooter). */
+    .base-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px 24px 0;
+    }
+    .base-header__brand {
+      display: inline-block;
+      padding: 8px 0;
+      color: #c2185b;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-decoration: none;
+    }
+    .base-footer {
+      padding: 16px;
+      color: #705965;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 2;
+      text-align: center;
+    }
+    /* Links are rendered by <SiteFooterLinks>, a child component, so the
+       selector must escape this component's style scope. */
+    .base-footer :global(a) {
+      display: inline-block;
+      padding: 4px 2px;
+      color: #705965;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+  </style>
+
+  <!-- Current hero model is the LCP candidate. Keep exactly one matching preload,
+       and only on pages that actually render the hero. -->
+  {preloadHeroImage && (
+    <link
+      rel="preload"
+      as="image"
+      href="/images/dvn/hero2/model-transparent-640w.webp"
+      imagesrcset="/images/dvn/hero2/model-transparent-480w.webp 480w, /images/dvn/hero2/model-transparent-640w.webp 640w"
+      imagesizes="(max-width: 480px) 60vw, 308px"
+      type="image/webp"
+      fetchpriority="high"
+    />
+  )}
+
+  <!-- Sprint 2C.6 Phase D: Doc-slider posters true-lazy via IntersectionObserver. -->
+  <!-- Audit found 8 of 10 posters loaded at first paint via Chromium aggressive native lazy. -->
+  <!-- ES5 IIFE, 3-layer fallback (no IO support → load all; observer error → load all). -->
+  <script>
+    (function () {
+      'use strict';
+      function loadPoster(poster) {
+        var src = poster.getAttribute('data-src');
+        if (src) {
+          poster.setAttribute('src', src);
+          poster.removeAttribute('data-src');
+        }
+        poster.removeAttribute('data-poster-lazy');
+      }
+      function initPosterLazy() {
+        var lazyPosters = document.querySelectorAll('img[data-poster-lazy="true"]');
+        if (lazyPosters.length === 0) return;
+        if (!('IntersectionObserver' in window)) {
+          Array.prototype.forEach.call(lazyPosters, loadPoster);
+          return;
+        }
+        try {
+          var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                loadPoster(entry.target);
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { rootMargin: '300px', threshold: 0.01 });
+          Array.prototype.forEach.call(lazyPosters, function (poster) { observer.observe(poster); });
+        } catch (e) {
+          Array.prototype.forEach.call(lazyPosters, loadPoster);
+        }
+      }
+      function schedulePosterLazy() {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(initPosterLazy, { timeout: 1200 });
+        } else {
+          window.setTimeout(initPosterLazy, 350);
+        }
+      }
+      if (document.readyState === 'complete') schedulePosterLazy();
+      else window.addEventListener('load', schedulePosterLazy, { once: true });
+    })();
+  </script>
+
+  <!-- Analytics consent (opt-out model, Ray's decision 26 Sep 2026).
+       GA4 is assigned to the Zaraz consent purpose "Analitik" and the Zaraz
+       auto-modal is OFF (it blocked the whole page). Visitors who have never
+       chosen are opted in here; "Pengaturan Cookie" in the footer opens the
+       Zaraz modal so they can opt out. The choice is stored by Zaraz in the
+       `zaraz-consent` cookie (name set in the Zaraz Consent settings). No-op
+       when Zaraz is not loaded; never touches /api tracking. -->
+  <script>
+    const CONSENT_COOKIE = 'zaraz-consent';
+
+    const hasStoredChoice = () =>
+      document.cookie.split('; ').some((cookie) => cookie.startsWith(`${CONSENT_COOKIE}=`));
+
+    const applyDefaultConsent = () => {
+      try {
+        const consent = window.zaraz?.consent;
+        if (!consent || hasStoredChoice()) return;
+        consent.setAll(true);
+        consent.sendQueuedEvents();
+      } catch {}
+    };
+
+    if (window.zaraz?.consent?.APIReady) applyDefaultConsent();
+    else document.addEventListener('zarazConsentAPIReady', applyDefaultConsent, { once: true });
+
+    document.addEventListener('click', (event) => {
+      const link = event.target instanceof Element ? event.target.closest('[data-cookie-settings]') : null;
+      if (!link || typeof window.zaraz?.showConsentModal !== 'function') return;
+      event.preventDefault();
+      try { window.zaraz.showConsentModal(); } catch { window.location.href = link.getAttribute('href') || '/privacy-policy/'; }
+    });
+  </script>
+
+  <!-- Slot for page-specific head content (schema JSON-LD, etc.) -->
+  <slot name="head" />
+</head>
+<body>
+  {!hideFooter && (
+    <header class="base-header">
+      <a class="base-header__brand" href="/" aria-label="DVN Collagen — kembali ke beranda">D·V·N</a>
+    </header>
+  )}
+  <main>
+    <slot />
+  </main>
+  {!hideFooter && (
+    <footer class="base-footer">
+      <nav aria-label="Tautan footer">
+        <SiteFooterLinks includeHome />
+      </nav>
+    </footer>
+  )}
+</body>
+</html>

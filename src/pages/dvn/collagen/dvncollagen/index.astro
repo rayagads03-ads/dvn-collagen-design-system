@@ -1,0 +1,64 @@
+---
+// ================================================================
+// PATH PAGE — wellnesbeauty.com/dvn/collagen/dvncollagen/
+// Google Ads Final URL — canonical POINTS TO ROOT (consolidation).
+//
+// Moved from /distributordvn/idi1368/ (old path 301-redirects here via
+// public/_redirects, so existing Google Ads clicks and bookmarks keep
+// working). DEALER_ID in /api/wa.ts and /api/track.ts stays 'i1368' — an
+// internal dealer identifier, independent of the public URL slug.
+//
+// Body is the shared <DVNReferenceLandingPage> (same as root). Because this
+// URL canonicalises to root, Google reads structured data from the root
+// page; the full graph (seller, product, FAQ) lives in src/pages/index.astro.
+// This page only declares its own WebPage and points at the root entities.
+// Excluded from the sitemap (astro.config.mjs) for the same reason.
+// ================================================================
+
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import DVNLandingPage from '../../../../components/DVNReferenceLandingPage.astro';
+
+export const prerender = true;
+
+const SITE_URL = 'https://wellnesbeauty.com/';
+const canonicalURL = SITE_URL; // POINTS TO ROOT, not self
+const pageURL = `${SITE_URL}dvn/collagen/dvncollagen/`;
+
+const meta = {
+  title: 'DVN Collagen — Konsultasi & Pemesanan | DVN X RAYA',
+  description: 'DVN Collagen, tablet kunyah untuk membantu memelihara kesehatan kulit. Konsultasi gratis via WhatsApp, bisa COD seluruh Indonesia. BPOM SD235042031 & bersertifikat Halal.',
+  image: 'https://wellnesbeauty.com/images/og-dvn-collagen-2026-09.jpg',
+};
+
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${pageURL}#webpage`,
+  "url": pageURL,
+  "name": meta.title,
+  "description": meta.description,
+  "isPartOf": { "@id": `${SITE_URL}#website` },
+  "about": { "@id": `${SITE_URL}#product` },
+  "inLanguage": "id-ID"
+};
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonicalURL={canonicalURL}
+  ogImage={meta.image}
+  ogType="website"
+  robots="index, follow"
+  hideFooter
+  preloadHeroImage
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+  </Fragment>
+
+  <DVNLandingPage
+    canonicalURL={canonicalURL}
+    pageType="path"
+  />
+</BaseLayout>

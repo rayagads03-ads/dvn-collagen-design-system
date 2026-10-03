@@ -1,0 +1,44 @@
+---
+// ================================================================
+// SiteFooterLinks — single source of truth for site-wide footer links.
+//
+// Used by:
+//   src/layouts/BaseLayout.astro              (legal/utility + 404 pages)
+//   src/components/DVNReferenceLandingPage.astro (root + Google Ads URL)
+//
+// Renders bare <a> elements separated by `separator`; each parent owns
+// the styling so the landing page keeps its own footer design.
+// `includeHome` adds the "Beranda" link for pages other than the home page.
+// "Pengaturan Cookie" carries `data-cookie-settings`: the script in
+// BaseLayout opens the Zaraz consent modal on click; without Zaraz it falls
+// back to the privacy-policy analytics section.
+// ================================================================
+
+export interface Props {
+  includeHome?: boolean;
+  separator?: string;
+}
+
+const { includeHome = false, separator = ' · ' } = Astro.props;
+
+const footerLinks = [
+  ...(includeHome ? [{ href: '/', label: 'Beranda' }] : []),
+  { href: '/about/', label: 'Tentang Kami' },
+  { href: '/informasi-produk/', label: 'Informasi Produk' },
+  { href: '/cek-keaslian-dvn/', label: 'Cek Keaslian' },
+  { href: '/cara-pemesanan/', label: 'Cara Pemesanan' },
+  { href: '/kontak/', label: 'Kontak' },
+  { href: '/refund/', label: 'Pengembalian' },
+  { href: '/terms/', label: 'Syarat & Ketentuan' },
+  { href: '/privacy-policy/', label: 'Kebijakan Privasi' },
+];
+---
+
+{footerLinks.map((link, index) => (
+  <Fragment>
+    {index > 0 && <span aria-hidden="true">{separator}</span>}
+    <a href={link.href}>{link.label}</a>
+  </Fragment>
+))}
+<span aria-hidden="true">{separator}</span>
+<a href="/privacy-policy/#analitik" data-cookie-settings aria-haspopup="dialog">Pengaturan Cookie</a>

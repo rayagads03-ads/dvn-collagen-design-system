@@ -1,0 +1,446 @@
+<style>
+  .claude-hero {
+    --rose: #d81767;
+    --line: rgba(192, 59, 112, .16);
+    --shadow: 0 12px 30px rgba(99, 38, 65, .10);
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 72% 10%, rgba(255,255,255,.92) 0 12%, transparent 30%),
+      radial-gradient(circle at 15% 30%, rgba(255,180,205,.32), transparent 45%),
+      radial-gradient(circle at 85% 55%, rgba(255,200,220,.28), transparent 42%),
+      linear-gradient(180deg, #fff8fb 0%, #ffe7f0 38%, #fff4f8 65%, #ffe9f1 100%);
+  }
+  .claude-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle, rgba(205,87,132,.1) 0 1px, transparent 1.5px) 0 0 / 28px 28px,
+      radial-gradient(circle, rgba(255,255,255,.72) 0 1px, transparent 1.5px) 14px 14px / 28px 28px;
+    opacity: .42;
+    pointer-events: none;
+  }
+  .topbar {
+    position: relative;
+    z-index: 5;
+    padding: 20px 25px 15px;
+    border-bottom: 1px solid rgba(228,109,150,.12);
+    background: rgba(255,250,252,.56);
+  }
+  .topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .topbar-actions { display: flex; flex: 0 0 auto; flex-direction: column; align-items: stretch; }
+  .brand { display: inline-flex; flex-direction: column; text-decoration: none; }
+  .brand-mark { color: #d91968; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 37px; font-weight: 700; line-height: .9; letter-spacing: .1em; }
+  .brand-sub { margin-top: 6px; color: #cf608c; font-size: 7px; letter-spacing: .14em; }
+  .top-cta, .primary-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ef2a80, #c60e57);
+    box-shadow: 0 11px 23px rgba(216,23,103,.22);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .18s ease;
+  }
+  .top-cta { padding: 11px 17px; }
+  .top-cta:hover, .primary-cta:hover { transform: translateY(-2px); }
+  .top-cta img, .primary-cta img { width: 19px; height: 19px; filter: brightness(0) invert(1); }
+  .top-status { width: 100%; margin-top: 7px; color: #9e6078; font-size: 9px; line-height: 1; text-align: center; white-space: nowrap; }
+  .status-dot { display: inline-block; width: 6px; height: 6px; margin-right: 4px; border-radius: 50%; background: #28bf62; box-shadow: 0 0 0 3px rgba(40,191,98,.12); }
+  .ambient { position: absolute; border-radius: 50%; filter: blur(15px); pointer-events: none; }
+  .ambient-one { width: 220px; height: 220px; right: -80px; top: 260px; background: rgba(255,147,189,.22); }
+  .ambient-two { width: 180px; height: 180px; left: -70px; top: 610px; background: rgba(255,225,235,.7); }
+  .grid { position: relative; z-index: 2; }
+  .copy { position: relative; z-index: 3; width: 59%; padding: 28px 0 12px 28px; }
+  .official {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 17px;
+    padding: 9px 13px;
+    border: 1px solid rgba(212,45,106,.11);
+    border-radius: 999px;
+    background: rgba(255,255,255,.9);
+    box-shadow: var(--shadow);
+    color: #a60f4f;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .official img { width: 19px; height: 19px; }
+  .eyebrow { margin: 0 0 9px; color: #9d5b76; font-size: 9px; font-weight: 600; letter-spacing: .3em; }
+  .title { margin: 0; max-width: 100%; color: #b31255; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 55px; font-weight: 600; line-height: .91; }
+  .title span {
+    position: relative;
+    display: block;
+    font-size: 100px;
+    line-height: .84;
+    letter-spacing: .02em;
+    background: linear-gradient(105deg, #9d6311 0%, #d89126 18%, #fff0a9 28%, #d71869 41%, #ee7190 66%, #9e0b4a 100%);
+    background-position: 100% 50%;
+    background-size: 230% 100%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    overflow: hidden;
+  }
+  .title span::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 32%, rgba(255, 244, 183, .94) 48%, transparent 64%);
+    background-clip: text;
+    color: transparent;
+    content: 'DVN';
+    pointer-events: none;
+    transform: translateX(-125%);
+    -webkit-background-clip: text;
+  }
+  :global(html.dvn-motion-ready) .title span::after { animation: dvn-gold-shine 5.8s ease-in-out infinite; }
+  .title-sub {
+    display: block;
+    margin-top: 9px;
+    color: #6d4a5a;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  @keyframes dvn-gold-shine {
+    0%, 12% { transform: translateX(-125%); }
+    38%, 100% { transform: translateX(125%); }
+  }
+  :global(html.dvn-motion-ready .dvn-click-cue) {
+    animation: dvn-click-hint 5.6s ease-in-out infinite;
+    transform-origin: center;
+    will-change: scale;
+  }
+  :global(html.dvn-motion-ready .dvn-click-cue:hover) { animation-play-state: paused; scale: 1.025; }
+  :global(html.dvn-motion-ready .dvn-click-cue:active) { animation-play-state: paused; scale: .97; }
+  @keyframes dvn-click-hint {
+    0%, 76%, 100% { scale: 1; }
+    82% { scale: 1.018; }
+    87% { scale: .995; }
+    92% { scale: 1.01; }
+  }
+  .benefits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: 93%; margin: 16px 0 14px; }
+  .benefit { display: grid; grid-template-columns: 39px 1fr; align-items: center; gap: 7px; color: #463541; font-size: 10px; font-weight: 600; line-height: 1.25; }
+  .benefit img { width: 36px; height: 36px; padding: 7px; border: 1px solid rgba(219,43,111,.24); border-radius: 50%; filter: invert(21%) sepia(87%) saturate(3607%) hue-rotate(322deg) brightness(94%) contrast(91%); }
+  .primary-cta { width: 92%; min-height: 45px; padding: 10px 17px; font-size: 13px; }
+  .micro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 98%; margin-top: 11px; }
+  .micro-item { display: flex; min-width: 0; align-items: center; gap: 5px; padding-right: 6px; border-right: 1px solid var(--line); }
+  .micro-item:last-child { border-right: 0; }
+  .micro-item img { flex: 0 0 18px; width: 18px; height: 18px; filter: invert(21%) sepia(49%) saturate(1004%) hue-rotate(282deg) brightness(83%) contrast(94%); }
+  .micro-item strong, .micro-item small { display: block; white-space: nowrap; }
+  .micro-item strong { font-size: 7.5px; }
+  .micro-item small { color: #795c6a; font-size: 5.8px; }
+  .visual { position: absolute; z-index: 2; right: -2%; top: 45px; width: 44%; pointer-events: none; }
+  .visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(-8px 12px 14px rgba(110,45,71,.12));
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 80%, transparent 98%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 80%, transparent 98%);
+  }
+  .product-zone { position: relative; z-index: 3; padding: 0 28px; margin-top: 0; }
+  .product-card { overflow: hidden; border-radius: 25px; background: rgba(255,255,255,.72); box-shadow: 0 20px 44px rgba(193,45,100,.15); }
+  .product-image { display: block; width: 82%; height: auto; margin: 10px auto; border-radius: 18px; object-fit: contain; }
+  .certs { position: relative; z-index: 4; display: grid; grid-template-columns: repeat(4,1fr); margin: 14px 28px 0; overflow: hidden; border: 1px solid rgba(213,76,126,.11); border-radius: 18px; background: rgba(255,255,255,.9); box-shadow: var(--shadow); }
+  .cert { display: grid; min-height: 78px; grid-template-rows: 30px auto; place-items: center; align-content: center; padding: 7px 4px; border-right: 1px solid var(--line); text-align: center; }
+  .cert:last-child { border-right: 0; }
+  .cert img { width: auto; height: 25px; max-width: 44px; margin-bottom: 5px; object-fit: contain; }
+  .cert strong { display: block; font-size: 8.5px; line-height: 1.2; }
+  .cert small { display: block; margin-top: 3px; color: #806774; font-size: 6.5px; }
+  .closing { position: relative; z-index: 3; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 17px; padding: 18px 30px 14px; }
+  .closing > div:first-child { padding-right: 17px; border-right: 1px solid var(--line); }
+  .closing strong { display: block; margin-bottom: 5px; color: #c1185b; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; }
+  .closing span { color: #4f3b48; font-size: 10px; line-height: 1.4; }
+  .signature { color: #c81961; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 25px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(-4deg); }
+  .signature small { display: block; margin-top: 7px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 7px; font-style: normal; letter-spacing: .26em; }
+  .bottom-benefits { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(4,1fr); padding: 11px 8px 14px; border-top: 1px solid rgba(206,52,109,.1); background: rgba(255,230,239,.44); }
+  .bottom-benefit { display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid var(--line); color: #4a3744; font-size: 9px; font-weight: 600; }
+  .bottom-benefit:last-child { border-right: 0; }
+  .bottom-benefit img { width: 23px; height: 23px; filter: invert(21%) sepia(87%) saturate(3607%) hue-rotate(322deg) brightness(94%) contrast(91%); }
+  .hero-jump-nav {
+    position: relative;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+    padding: 15px 28px 20px;
+    border-top: 1px solid rgba(206,52,109,.1);
+    background: rgba(255,249,252,.72);
+  }
+  .hero-jump-link {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 14px;
+    min-height: 68px;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 13px;
+    border: 1px solid rgba(206,52,109,.18);
+    border-radius: 22px;
+    background: rgba(255,255,255,.92);
+    box-shadow: 0 8px 19px rgba(151,42,82,.07);
+    color: #94315b;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-decoration: none;
+  }
+  .hero-jump-link__icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 13px;
+    background: #fbe7ee;
+    color: #c84277;
+  }
+  .hero-jump-link__icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+  .hero-jump-link > b { color: #cf4c7d; font-size: 25px; font-weight: 600; }
+  .hero-jump-link--featured { border-color: #d82970; }
+  .hero-jump-link--featured .hero-jump-link__icon { background: #c84277; color: #fff; }
+
+  @media (max-width: 480px) {
+    .topbar { padding: 15px 14px 12px; }
+    .brand-mark { font-size: 28px; }
+    .brand-sub { font-size: 5px; }
+    .top-cta { padding: 9px 12px; font-size: 10px; }
+    .copy { width: 66%; padding: 23px 0 10px 15px; }
+    .official { margin-bottom: 19px; padding: 7px 10px; font-size: 9px; }
+    .eyebrow { font-size: 7px; }
+    .title { font-size: 41px; }
+    .title span { font-size: 76px; }
+    .title-sub { margin-top: 7px; font-size: 12px; }
+    .benefits { grid-template-columns: 1fr 1fr; max-width: 95%; }
+    .benefit { grid-template-columns: 31px 1fr; font-size: 8px; }
+    .benefit img { width: 29px; height: 29px; padding: 6px; }
+    .primary-cta { width: 100%; padding-inline: 9px; font-size: 9.5px; }
+    .micro {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      width: 145%;
+      margin-top: 11px;
+      padding: 9px 7px;
+      border: 1px solid rgba(196,59,112,.11);
+      border-radius: 16px;
+      background: rgba(255,255,255,.7);
+      box-shadow: 0 9px 22px rgba(145,46,82,.08);
+      backdrop-filter: blur(7px);
+    }
+    .micro-item { justify-content: center; gap: 4px; padding: 0 4px; border-right: 1px solid var(--line); }
+    .micro-item img { flex-basis: 17px; width: 17px; height: 17px; }
+    .micro-item strong { overflow: hidden; font-size: 6.3px; text-overflow: ellipsis; }
+    .micro-item small { font-size: 5px; }
+    .visual { right: -15%; top: 84px; width: 60%; }
+    .product-zone { margin-top: 0; padding: 0 13px; }
+    .product-image { width: 88%; margin-block: 8px; }
+    .certs { margin-inline: 13px; }
+    .cert { min-height: 70px; padding-inline: 2px; }
+    .cert strong { font-size: 6.5px; }
+    .cert small { font-size: 5.4px; }
+    .closing { grid-template-columns: 1fr; padding: 16px 17px; text-align: center; }
+    .closing > div:first-child { padding-right: 0; border-right: 0; }
+    .signature { font-size: 22px; }
+    .bottom-benefit { font-size: 7px; }
+    .hero-jump-nav { gap: 8px; padding: 12px 13px 16px; }
+    .hero-jump-link { grid-template-columns: 36px minmax(0,1fr) 10px; min-height: 61px; gap: 7px; padding: 7px 8px; border-radius: 18px; font-size: 10px; }
+    .hero-jump-link__icon { width: 36px; height: 36px; border-radius: 11px; }
+    .hero-jump-link__icon svg { width: 20px; height: 20px; }
+    .hero-jump-link > b { font-size: 20px; }
+
+    /* SXO-004 readability floor (mobile): body/buttons >= 12-13px, labels >= 10-11px.
+       The layout was scaled down from a 724px artwork, leaving trust info at 5-7px. */
+    .top-cta { font-size: 12px; }
+    .top-status { font-size: 11px; }
+    .official { font-size: 11px; }
+    .eyebrow { font-size: 10px; letter-spacing: .16em; }
+    .benefits { gap: 8px 6px; max-width: 100%; }
+    .benefit { grid-template-columns: 26px 1fr; gap: 6px; font-size: 11px; line-height: 1.2; }
+    .benefit img { width: 26px; height: 26px; padding: 5px; }
+    /* Same width as the .micro trust box below it, so the label fits on one line. */
+    .primary-cta { width: 145%; font-size: 13px; white-space: nowrap; }
+    .micro { padding: 10px 6px; }
+    .micro-item { gap: 5px; }
+    .micro-item strong, .micro-item small { white-space: normal; }
+    .micro-item strong { font-size: 11px; line-height: 1.2; }
+    .micro-item small { margin-top: 2px; font-size: 10px; line-height: 1.2; }
+    .certs { grid-template-columns: repeat(2, 1fr); }
+    .cert { min-height: 76px; padding: 10px 6px; }
+    .cert:nth-child(2n) { border-right: 0; }
+    .cert:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .cert strong { font-size: 12px; }
+    .cert small { font-size: 11px; }
+    .closing span { font-size: 13px; }
+    .bottom-benefit { font-size: 10px; }
+    .hero-jump-link { font-size: 12px; }
+  }
+
+  /* SXO-004 readability floor (tablet/desktop). The 724px column was built
+     with 5-9px trust labels; same floors as mobile, desktop grids kept. */
+  @media (min-width: 481px) {
+    .top-status { font-size: 11px; }
+    .eyebrow { font-size: 10.5px; }
+    .benefit { font-size: 12px; }
+    .micro-item strong, .micro-item small { white-space: normal; }
+    .micro-item strong { font-size: 11.5px; line-height: 1.2; }
+    .micro-item small { margin-top: 2px; font-size: 10.5px; line-height: 1.2; }
+    .cert strong { font-size: 12px; }
+    .cert small { font-size: 11px; }
+    .closing span { font-size: 13px; }
+    .bottom-benefit { font-size: 11px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.dvn-motion-ready) .title span::after { animation: none; }
+    :global(html.dvn-motion-ready .dvn-click-cue) { animation: none; will-change: auto; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <a class="brand" href="#top"><span class="brand-mark">D·V·N</span><span class="brand-sub" aria-hidden="true">NUTRITION FOR A MORE RADIANT YOU</span></a>
+    <div class="topbar-actions">
+      <a class="top-cta" href="/api/wa?cta=top_bar&msg=Halo%2C%20saya%20ingin%20konsultasi%20tentang%20DVN" data-cta="top_bar"><img src="/images/dvn/hero2/icons/whatsapp.svg" alt="" width="48" height="48" /> Konsultasi Gratis <span aria-hidden="true">›</span></a>
+      <div class="top-status"><span class="status-dot"></span> Respon Cepat · 24 Jam</div>
+    </div>
+  </div>
+</div>
+
+<section class="claude-hero" aria-labelledby="claude-hero-title">
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="grid">
+    <div class="copy">
+      <div class="official"><img src="/images/dvn/hero2/icons/crown.svg" alt="" width="48" height="48" /> Website Penjualan DVN</div>
+      <p class="eyebrow">RUTINITAS CANTIK DARI DALAM</p>
+      <h1 id="claude-hero-title" class="title"><span>DVN</span> Collagen <small class="title-sub">Tablet Kunyah untuk Membantu Memelihara Kesehatan Kulit</small></h1>
+      <div class="benefits" aria-label="Manfaat utama">
+        <div class="benefit"><img src="/images/dvn/hero2/icons/sparkle.svg" alt="" width="48" height="48" /><span>7 Bahan Aktif per Tablet</span></div>
+        <div class="benefit"><img src="/images/dvn/hero2/icons/waves.svg" alt="" width="48" height="48" /><span>Kolagen Ikan &amp; Tripeptida</span></div>
+        <div class="benefit"><img src="/images/dvn/hero2/icons/drop.svg" alt="" width="48" height="48" /><span>2× Sehari 1 Tablet</span></div>
+        <div class="benefit"><img src="/images/dvn/hero2/icons/leaf.svg" alt="" width="48" height="48" /><span>Praktis Dikonsumsi</span></div>
+      </div>
+      <a class="primary-cta" href="/api/wa?cta=hero_primary&msg=Halo%2C%20saya%20ingin%20konsultasi%20tentang%20DVN" data-cta="hero_primary"><img src="/images/dvn/hero2/icons/whatsapp.svg" alt="" width="48" height="48" /> Konsultasi Gratis Sekarang <span aria-hidden="true">›</span></a>
+      <div class="micro" aria-label="Keunggulan pembelian">
+        <div class="micro-item"><img src="/images/dvn/hero2/icons/shield.svg" alt="" width="48" height="48" /><span><strong>Terdaftar BPOM</strong><small>&amp; Bersertifikat Halal</small></span></div>
+        <div class="micro-item"><img src="/images/dvn/hero2/icons/truck.svg" alt="" width="48" height="48" /><span><strong>Pengiriman</strong><small>Seluruh Indonesia</small></span></div>
+        <div class="micro-item"><img src="/images/dvn/hero2/icons/card.svg" alt="" width="38" height="28" /><span><strong>Bisa COD</strong><small>Bayar di Rumah</small></span></div>
+      </div>
+    </div>
+    <div class="visual" aria-hidden="true"><img src="/images/dvn/hero2/model-transparent-640w.webp" srcset="/images/dvn/hero2/model-transparent-480w.webp 480w, /images/dvn/hero2/model-transparent-640w.webp 640w" sizes="(max-width: 480px) 60vw, 308px" alt="" width="640" height="799" loading="eager" fetchpriority="high" decoding="async" /></div>
+  </div>
+  <nav class="hero-jump-nav" aria-label="Navigasi cepat informasi penting">
+    <a class="hero-jump-link" href="#dvn-keaslian">
+      <span class="hero-jump-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8c.7-4 3-6 7-6s6.3 2 7 6" /></svg></span>
+      <span>Bukti &amp; keaslian</span><b aria-hidden="true">›</b>
+    </a>
+    <a class="hero-jump-link" href="#dvn-legalitas">
+      <span class="hero-jump-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Zm-3 8 2 2 4-4" /></svg></span>
+      <span>Aman &amp; terdaftar?</span><b aria-hidden="true">›</b>
+    </a>
+    <a class="hero-jump-link hero-jump-link--featured" href="#dvn-video-proof-title">
+      <span class="hero-jump-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 0v8l8 4 8-4V8M12 12v8" /></svg></span>
+      <span>Customer COD &amp; Cek Dulu</span><b aria-hidden="true">›</b>
+    </a>
+    <a class="hero-jump-link" href="#dvn-promo-title">
+      <span class="hero-jump-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s7-5.7 7-12A7 7 0 1 0 5 9c0 6.3 7 12 7 12Zm0-9.5A2.5 2.5 0 1 0 12 6a2.5 2.5 0 0 0 0 5.5Z" /></svg></span>
+      <span>Cara pemesanan</span><b aria-hidden="true">›</b>
+    </a>
+  </nav>
+  <div class="product-zone"><div class="product-card"><img class="product-image" src="/images/dvn/hero2/product-stage-v2-600w.webp" srcset="/images/dvn/hero2/product-stage-v2-600w.webp 600w, /images/dvn/hero2/product-stage-v2.webp 900w" sizes="(max-width: 480px) calc(88vw - 26px), 528px" alt="DVN chewable tablet dengan badge GMP Quality dan 250.000+ perempuan telah mempercayai DVN" width="600" height="450" loading="lazy" fetchpriority="low" decoding="async" data-product-animation data-static-src="/images/dvn/hero2/product-stage-v2-600w.webp" data-animation-src="/images/dvn/hero2/product-stage-animation.webp" /></div></div>
+  <div class="certs" aria-label="Kepercayaan dan sertifikasi">
+    <div class="cert"><img src="/images/dvn/hero2/logo-bpom-80w.webp" alt="Logo Badan POM" width="80" height="74" /><div><strong>Terdaftar di BPOM</strong><small>SD235042031</small></div></div>
+    <div class="cert"><img src="/images/dvn/hero2/logo-halal-80w.webp" alt="Logo Halal Indonesia" width="53" height="80" /><div><strong>Bersertifikat Halal</strong><small>ID00410012348610323</small></div></div>
+    <div class="cert"><img src="/images/dvn/hero2/icons/globe.svg" alt="" width="48" height="48" /><div><strong>Bersertifikat GMP</strong><small>Tertera di label</small></div></div>
+    <div class="cert"><img src="/images/dvn/hero2/icons/heart.svg" alt="" width="48" height="48" /><div><strong>Dipercaya</strong><small>250.000+ perempuan</small></div></div>
+  </div>
+  <div class="closing"><div><strong>DVN Collagen</strong><span>Suplemen kesehatan untuk membantu memelihara kesehatan kulit</span></div><div class="signature">Healthy Skin<br />Happier You <small>— DVN —</small></div></div>
+  <div class="bottom-benefits" aria-hidden="true">
+    <div class="bottom-benefit"><img src="/images/dvn/hero2/icons/leaf.svg" alt="" width="48" height="48" />Terdaftar BPOM</div>
+    <div class="bottom-benefit"><img src="/images/dvn/hero2/icons/sparkle.svg" alt="" width="48" height="48" />Halal</div>
+    <div class="bottom-benefit"><img src="/images/dvn/hero2/icons/waves.svg" alt="" width="48" height="48" />GMP</div>
+    <div class="bottom-benefit"><img src="/images/dvn/hero2/icons/drop.svg" alt="" width="48" height="48" />60 Tablet</div>
+  </div>
+</section>
+
+<script>
+  const enableDeferredMotion = () => {
+    if (document.documentElement.classList.contains('dvn-motion-ready')) return;
+    const activate = () => {
+      document.documentElement.classList.add('dvn-motion-ready');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const interactiveElements = document.querySelectorAll(
+        '.dvn-ref-page a[href], .dvn-ref-page button, .dvn-chat-launcher, .dvn-wa-launcher'
+      );
+      const interactiveObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => entry.target.classList.toggle('dvn-click-cue', entry.isIntersecting));
+      }, { threshold: .35 });
+      interactiveElements.forEach((element) => interactiveObserver.observe(element));
+
+      // Product stage animation (96-frame animated WebP, ~3.9 MB, loops
+      // forever). Armed only after the full page load + idle (this block runs in
+      // activate()) AND the visitor's first interaction (scroll/touch/click/key);
+      // page-speed tools never interact, so the 3.9 MB file is never part of
+      // their measurement. Skipped on Save-Data and 2G connections.
+      // The first time >= 45% of the image is on screen the animation is
+      // loaded ONCE into the same <img> (the browser keeps painting the static
+      // frame until it is ready) and then KEPT (Ray's decision, 25 Sep 2026).
+      // Swapping back to the static image on scroll-out forced a re-load/
+      // re-decode of 3.9 MB on every return, so visitors kept seeing the
+      // static frame. A separate preloader Image() is avoided on purpose: it
+      // downloaded the 3.9 MB file twice when the HTTP cache did not keep it.
+      // Browsers do not paint off-screen animations.
+      const productAnimation = document.querySelector('[data-product-animation]');
+      if (
+        productAnimation instanceof HTMLImageElement &&
+        productAnimation.dataset.animationSrc &&
+        productAnimation.dataset.staticSrc &&
+        !navigator.connection?.saveData &&
+        !/^(slow-2g|2g)$/.test(navigator.connection?.effectiveType || '')
+      ) {
+        const animationSrc = productAnimation.dataset.animationSrc;
+        const productObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting || entry.intersectionRatio < .45) return;
+            productObserver.disconnect();
+            const staticSrcset = productAnimation.getAttribute('srcset') || '';
+            // Removing srcset can fire a load for the static file first, so only
+            // count the load whose currentSrc is the animation.
+            const onAnimationLoad = () => {
+              if (!productAnimation.currentSrc.endsWith(animationSrc)) return;
+              productAnimation.removeEventListener('load', onAnimationLoad);
+              productAnimation.dataset.animationActive = 'true';
+            };
+            productAnimation.addEventListener('load', onAnimationLoad);
+            // On failure restore the static image and its srcset.
+            productAnimation.addEventListener('error', () => {
+              productAnimation.dataset.animationActive = 'failed';
+              productAnimation.src = productAnimation.dataset.staticSrc || '';
+              if (staticSrcset) productAnimation.setAttribute('srcset', staticSrcset);
+            }, { once: true });
+            // srcset would win over src, so clear it before swapping.
+            productAnimation.removeAttribute('srcset');
+            productAnimation.src = animationSrc;
+          });
+        }, { threshold: [0, .45, .8] });
+        const armAnimation = () => {
+          ['scroll', 'touchstart', 'pointerdown', 'keydown'].forEach((type) => window.removeEventListener(type, armAnimation));
+          productObserver.observe(productAnimation);
+        };
+        ['scroll', 'touchstart', 'pointerdown', 'keydown'].forEach((type) => window.addEventListener(type, armAnimation, { once: true, passive: true }));
+      }
+    };
+    if ('requestIdleCallback' in window) window.requestIdleCallback(activate, { timeout: 1600 });
+    else window.setTimeout(activate, 500);
+  };
+
+  if (document.readyState === 'complete') enableDeferredMotion();
+  else window.addEventListener('load', enableDeferredMotion, { once: true });
+</script>

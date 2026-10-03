@@ -1,0 +1,1886 @@
+---
+import DVNClaudeHero from './DVNClaudeHero.astro';
+import DVNVideoTestimonials from './DVNVideoTestimonials.astro';
+import DVNAuthenticitySection from './DVNAuthenticitySection.astro';
+import SiteFooterLinks from './SiteFooterLinks.astro';
+import faqEntries from '../data/dvnFaq.json';
+
+export interface Props {
+  canonicalURL: string;
+  pageType: 'root' | 'path';
+}
+
+const { canonicalURL: _canonicalURL, pageType: _pageType } = Astro.props;
+
+const whyItems = [
+  ['DVN Tidak Dijual di Apotik', 'DVN dipasarkan eksklusif melalui jaringan dealer terverifikasi Wellous — bukan via apotik umum.'],
+  ['Dapatkan dari Dealer Terdaftar', 'Kualitas terjaga, langsung dari sumber terpercaya.'],
+  ['Konsultasi Gratis', 'Dealer menyediakan konsultasi via WhatsApp — tanpa biaya. Apotik tidak memberikan layanan ini.'],
+  ['Traceability Lengkap', 'Setiap pembelian dari dealer DVN terverifikasi memiliki jejak transaksi yang tercatat, sehingga asal produk dapat ditelusuri.'],
+  ['Bukan Kanal Marketplace', 'Wellous memasarkan DVN melalui jaringan dealer terdaftar. Keaslian produk yang dijual di Shopee, Tokopedia, Lazada, atau marketplace umum tidak dapat kami pastikan.'],
+  ['Keaslian & Garansi Wellous', 'Pembelian via dealer terdaftar memastikan produk asli, dalam masa konsumsi optimal, dengan garansi penggantian dari Wellous.'],
+];
+
+// Single source for the visible FAQ and the FAQPage schema on the root page.
+const faqs = faqEntries;
+
+const waBase = '/api/wa';
+const waLinks = {
+  // The hero button (DVNClaudeHero) owns cta=hero_primary; this is the
+  // consultation band further down, so it needs its own id.
+  consultBand: `${waBase}?cta=consult_band&msg=${encodeURIComponent('Halo kak, saya ingin konsultasi tentang DVN Collagen')}`,
+  promo: `${waBase}?cta=promo&msg=${encodeURIComponent('Halo kak, saya ingin cek ketersediaan dan promo DVN hari ini')}`,
+  final: `${waBase}?cta=final_cta&msg=${encodeURIComponent('Halo kak, saya ingin memulai perjalanan kulit sehat bersama DVN')}`,
+  floating: `${waBase}?cta=floating_wa&msg=${encodeURIComponent('Halo kak, saya ingin tanya tentang DVN Collagen')}`,
+};
+const deferredPixel = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1 1%22/%3E';
+---
+
+<style is:global>
+  :root {
+    --dvn-rose: #e5266d;
+    --dvn-rose-dark: #b81555;
+    --dvn-wine: #8e1746;
+    --dvn-pink: #ff8fb7;
+    --dvn-blush: #fff0f5;
+    --dvn-blush-2: #fde1ec;
+    --dvn-text: #533744;
+    --dvn-muted: #75606a;
+    --dvn-green: #19c969;
+    --dvn-footer: #40253b;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: #fcebf1;
+    color: var(--dvn-text);
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+  }
+  .base-footer { display: none; }
+  .dvn-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  .dvn-ref-page {
+    position: relative;
+    width: min(100%, 724px);
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+      linear-gradient(rgba(255,248,251,.91), rgba(255,241,246,.93)),
+      url('/images/dvn/reference2/page-background.webp') center top / 100% auto repeat-y;
+    box-shadow: 0 0 42px rgba(139, 41, 78, .12);
+  }
+  .dvn-reference-body { position: relative; overflow: hidden; }
+  .dvn-ref-page img { max-width: 100%; height: auto; }
+  .dvn-serif {
+    margin: 0;
+    color: var(--dvn-rose);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    line-height: .96;
+  }
+  .dvn-section-heading { text-align: center; }
+  .dvn-section-heading h2 { font-size: 30px; }
+  .dvn-section-heading p {
+    margin: 7px auto 0;
+    color: #594551;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .dvn-decor {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+  .dvn-decor-flower-left { width: 110px; left: -40px; top: 92px; }
+  .dvn-decor-flower-right { width: 105px; right: -28px; top: 5px; }
+  .dvn-decor-petal-one { width: 40px; left: 55px; top: 16px; transform: rotate(-30deg); }
+  .dvn-decor-petal-two { width: 36px; right: 128px; top: 65px; transform: rotate(20deg); }
+
+  /* Hero, composed to mirror the 724px reference artwork. */
+  .dvn-hero {
+    position: relative;
+    padding: 10px 46px 0;
+    min-height: 350px;
+  }
+  .dvn-hero-kicker {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    text-align: center;
+    color: #ee78a1;
+    font-size: 11px;
+    line-height: 1;
+  }
+  .dvn-hero-title {
+    position: relative;
+    z-index: 2;
+    margin: 1px 0 0;
+    text-align: center;
+    font-size: 47px;
+    font-style: italic;
+    letter-spacing: -.02em;
+  }
+  .dvn-hero-subtitle {
+    position: relative;
+    z-index: 2;
+    margin: 4px 0 10px;
+    text-align: center;
+    color: #5f4a55;
+    font-size: 10.5px;
+  }
+  .dvn-hero-card {
+    position: relative;
+    z-index: 2;
+    height: 262px;
+    overflow: hidden;
+    border: 1px solid rgba(222, 80, 134, .12);
+    border-radius: 17px;
+    background:
+      radial-gradient(circle at 74% 20%, rgba(255,255,255,.96), transparent 30%),
+      linear-gradient(112deg, rgba(255,255,255,.93), rgba(255,228,238,.78));
+    box-shadow: 0 14px 34px rgba(185, 57, 104, .12);
+  }
+  .dvn-hero-copy {
+    position: relative;
+    z-index: 5;
+    width: 44%;
+    padding: 23px 0 0 28px;
+  }
+  .dvn-hero-copy h2 {
+    font-size: 35px;
+    line-height: .82;
+  }
+  .dvn-hero-copy h2 span { display: block; font-size: 22px; margin: 6px 0 8px; }
+  .dvn-benefit-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+  .dvn-benefit-list li {
+    display: grid;
+    grid-template-columns: 19px 1fr;
+    align-items: center;
+    gap: 7px;
+    font-size: 9.5px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .dvn-benefit-list li::before {
+    content: '✓';
+    display: grid;
+    width: 18px;
+    height: 18px;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ff8caf, #e92c72);
+    color: #fff;
+    font-size: 10px;
+    box-shadow: 0 3px 7px rgba(219, 37, 101, .22);
+  }
+  .dvn-hero-trust {
+    position: absolute;
+    left: 28px;
+    bottom: 12px;
+    z-index: 7;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: 43%;
+    margin: 0;
+    font-size: 7.5px;
+    font-weight: 700;
+    color: #5d4651;
+  }
+  .dvn-hero-trust span { display: flex; min-width: 0; align-items: center; gap: 4px; }
+  .dvn-hero-trust b {
+    display: grid;
+    width: 19px;
+    height: 19px;
+    place-items: center;
+    border: 1.5px solid #9b486b;
+    border-radius: 50%;
+    color: var(--dvn-rose);
+    font-size: 9px;
+  }
+  .dvn-hero-product {
+    position: absolute;
+    z-index: 5;
+    left: 37%;
+    bottom: 21px;
+    width: 25%;
+    aspect-ratio: 1.05;
+    overflow: hidden;
+    filter: drop-shadow(0 13px 12px rgba(154, 40, 80, .16));
+  }
+  .dvn-hero-product img {
+    position: absolute;
+    top: -137%;
+    left: 0;
+    width: 200%;
+    max-width: none;
+  }
+  .dvn-hero-model {
+    position: absolute;
+    z-index: 4;
+    right: -2px;
+    top: 5px;
+    width: 42%;
+    filter: drop-shadow(-10px 8px 14px rgba(112, 45, 67, .12));
+  }
+  .dvn-superbrand {
+    position: absolute;
+    z-index: 6;
+    right: 15px;
+    bottom: 20px;
+    width: 88px;
+    filter: drop-shadow(0 4px 8px rgba(109, 62, 22, .18));
+  }
+  .dvn-handwritten {
+    position: absolute;
+    z-index: 6;
+    left: 51%;
+    top: 43px;
+    width: 88px;
+    color: #f05a92;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.05;
+    text-align: center;
+    transform: rotate(-7deg);
+  }
+
+  .dvn-value-strip {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px 40px 11px;
+  }
+  .dvn-value-card {
+    display: grid;
+    min-height: 64px;
+    grid-template-columns: 51px 1fr;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 9px;
+    border: 1px solid rgba(226, 77, 131, .14);
+    border-radius: 14px;
+    background: rgba(255,255,255,.62);
+    box-shadow: 0 5px 14px rgba(202, 77, 123, .05);
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  .dvn-value-card img { width: 46px; height: 46px; object-fit: contain; }
+  .dvn-value-card strong { color: var(--dvn-rose); }
+
+  .dvn-consult {
+    position: relative;
+    display: grid;
+    min-height: 134px;
+    grid-template-columns: 190px 1fr 112px;
+    align-items: center;
+    overflow: hidden;
+    padding: 0 38px;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(255,255,255,.35), transparent 28%),
+      linear-gradient(105deg, #f68aaa, #eb4b85 52%, #d91c68);
+    color: #fff;
+  }
+  .dvn-consult-model {
+    position: absolute;
+    left: 58px;
+    bottom: -96px;
+    width: 180px;
+    filter: drop-shadow(6px 8px 10px rgba(113, 23, 62, .2));
+  }
+  .dvn-consult-bubble {
+    position: absolute;
+    left: 28px;
+    top: 21px;
+    z-index: 3;
+    width: 102px;
+    padding: 11px 8px;
+    border-radius: 49% 51% 48% 52%;
+    background: #fff4f8;
+    color: #c51c5d;
+    font-size: 8px;
+    font-weight: 700;
+    text-align: center;
+    transform: rotate(-8deg);
+  }
+  .dvn-consult-copy { grid-column: 2; position: relative; z-index: 4; text-align: center; }
+  .dvn-consult-copy p { margin: 0 0 4px; font-size: 9px; }
+  .dvn-consult-copy h2 { margin: 0 0 10px; color: #fff; font-size: 28px; font-style: italic; }
+  .dvn-wa-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 23px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #25dd79, #0cbc5e);
+    box-shadow: 0 10px 20px rgba(0, 126, 60, .25), inset 0 1px rgba(255,255,255,.45);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .dvn-wa-button:hover { transform: translateY(-2px); box-shadow: 0 13px 24px rgba(0,126,60,.3); }
+  .dvn-wa-button img { width: 20px; height: 20px; object-fit: contain; }
+  .dvn-wa-button small { font-size: 16px; }
+  .dvn-consult-note { margin: 6px 0 0 !important; font-size: 8px !important; }
+  .dvn-consult-trust { grid-column: 3; display: grid; gap: 10px; position: relative; z-index: 3; font-size: 9px; font-weight: 600; }
+  .dvn-consult-trust span { display: flex; align-items: center; gap: 7px; }
+  .dvn-consult-trust img { width: 23px; height: 23px; flex: 0 0 23px; object-fit: contain; }
+
+  .dvn-ingredients { position: relative; padding: 11px 38px 0; }
+  .dvn-ingredients::after {
+    content: '';
+    position: absolute;
+    right: -27px;
+    top: 0;
+    width: 120px;
+    height: 130px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: .66;
+    pointer-events: none;
+  }
+  .dvn-ingredients.is-nearby::after { background-image: url('/images/dvn/reference2/decor/flowers-right.png'); }
+  .dvn-ingredient-stage {
+    position: relative;
+    display: grid;
+    height: 226px;
+    grid-template-columns: 57% 43%;
+    align-items: center;
+    margin-top: 5px;
+  }
+  .dvn-ingredient-product {
+    position: absolute;
+    left: -8px;
+    bottom: 6px;
+    width: 58%;
+    height: 210px;
+    overflow: hidden;
+    border-radius: 17px;
+    background:
+      radial-gradient(circle at 57% 36%, rgba(255,255,255,.94), transparent 34%),
+      linear-gradient(155deg, rgba(255,244,248,.9), rgba(255,216,230,.5));
+    filter: drop-shadow(0 12px 15px rgba(138, 50, 77, .1));
+  }
+  .dvn-product-plinth {
+    position: absolute;
+    z-index: 1;
+    left: 5%;
+    right: 4%;
+    bottom: 9px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #f8edf0, #d7c5c6 70%, #bdadae);
+    box-shadow: 0 10px 15px rgba(108,68,76,.15), inset 0 4px 8px rgba(255,255,255,.8);
+  }
+  .dvn-ingredient-pack {
+    position: absolute;
+    z-index: 4;
+    left: 32%;
+    bottom: 24px;
+    width: 52%;
+    aspect-ratio: 1.05;
+    overflow: hidden;
+    filter: drop-shadow(0 8px 8px rgba(122,57,79,.15));
+  }
+  .dvn-ingredient-pack img {
+    position: absolute;
+    top: -137%;
+    left: 0;
+    width: 200%;
+    max-width: none;
+  }
+  .dvn-seven-item small { display: block; margin-top: 1px; color: #7a5a68; font-weight: 600; }
+  .dvn-nowrap { white-space: nowrap; }
+  .dvn-guarantee-list a { color: inherit; text-decoration: underline; }
+  .dvn-stage-pomegranate {
+    position: absolute;
+    z-index: 3;
+    left: 1%;
+    bottom: 24px;
+    width: 38%;
+    filter: drop-shadow(0 7px 8px rgba(123,25,46,.15));
+  }
+  .dvn-stage-flowers {
+    position: absolute;
+    z-index: 5;
+    left: -3%;
+    bottom: 8px;
+    width: 43%;
+  }
+  .dvn-stage-handwritten {
+    position: absolute;
+    z-index: 6;
+    top: 24px;
+    right: 5%;
+    color: #eb6395;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: .9;
+    text-align: center;
+    transform: rotate(4deg);
+  }
+  .dvn-stage-handwritten small {
+    display: block;
+    margin-top: 4px;
+    font-size: 8px;
+    font-weight: 600;
+  }
+  .dvn-ingredient-panel {
+    grid-column: 2;
+    position: relative;
+    z-index: 3;
+    min-height: 188px;
+    padding: 15px 13px 10px;
+    border: 1px solid rgba(229, 59, 116, .12);
+    border-radius: 15px;
+    background: rgba(255,255,255,.84);
+    box-shadow: 0 10px 24px rgba(169, 55, 95, .08);
+  }
+  .dvn-ingredient-panel h3 { margin: 0 0 5px; color: var(--dvn-rose-dark); font-family: Georgia, serif; font-size: 17px; }
+  .dvn-ingredient-panel > p { margin: 0 0 8px; font-size: 9.5px; line-height: 1.35; }
+  .dvn-seven-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 4px; }
+  .dvn-seven-item { color: var(--dvn-rose); font-size: 6.2px; font-weight: 700; line-height: 1.1; text-align: center; }
+  .dvn-seven-item img { display: block; width: 41px; height: 41px; margin: 0 auto 3px; object-fit: contain; }
+  .dvn-seven-item:nth-child(5) { grid-column: 1 / 2; }
+  .dvn-seven-item:nth-child(7) { grid-column: 3 / 4; }
+  .dvn-four-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-bottom: 10px; }
+  .dvn-ingredient-card {
+    min-height: 125px;
+    padding: 10px 8px 8px;
+    border: 1px solid rgba(224, 78, 130, .15);
+    border-radius: 15px;
+    background: rgba(255,255,255,.58);
+    text-align: center;
+  }
+  .dvn-ingredient-card img { width: 43px; height: 43px; object-fit: contain; }
+  .dvn-ingredient-card h3 { margin: 3px 0 4px; color: var(--dvn-rose); font-family: Georgia, serif; font-size: 13px; }
+  .dvn-ingredient-card .country {
+    display: inline-block;
+    margin-bottom: 5px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.88);
+    box-shadow: 0 2px 7px rgba(156,74,101,.08);
+    color: #5b4650;
+    font-size: 8px;
+    font-weight: 700;
+  }
+  .dvn-ingredient-card p { margin: 0; color: #65505b; font-size: 8px; line-height: 1.35; }
+
+  .dvn-quote-card {
+    display: grid;
+    min-height: 91px;
+    grid-template-columns: 35% 65%;
+    align-items: center;
+    margin: 0 38px 10px;
+    overflow: hidden;
+    border: 1px solid rgba(226, 78, 131, .13);
+    border-radius: 15px;
+    background: linear-gradient(90deg, rgba(255,255,255,.75), rgba(255,238,245,.88));
+  }
+  .dvn-coffee { font-size: 50px; text-align: center; filter: drop-shadow(0 6px 8px rgba(96,57,42,.15)); }
+  .dvn-quote-copy { padding: 10px 18px 10px 0; text-align: center; }
+  .dvn-quote-copy blockquote { margin: 0; color: var(--dvn-rose); font-family: Georgia, serif; font-size: 21px; font-style: italic; line-height: 1.05; }
+  .dvn-quote-copy p { margin: 7px 0 0; font-size: 8.5px; }
+
+  .dvn-quiz-teaser {
+    display: grid;
+    min-height: 80px;
+    grid-template-columns: 70px 1fr 190px;
+    align-items: center;
+    gap: 8px;
+    margin: 0 38px 12px;
+    padding: 8px 15px;
+    border: 1px solid rgba(226,78,131,.15);
+    border-radius: 15px;
+    background: rgba(255,255,255,.62);
+    box-shadow: 0 8px 20px rgba(180,60,102,.06);
+  }
+  .dvn-quiz-teaser img { width: 55px; height: 55px; object-fit: contain; }
+  .dvn-quiz-teaser h2 { margin: 0 0 3px; color: var(--dvn-rose); font-family: Georgia, serif; font-size: 16px; }
+  .dvn-quiz-teaser p { margin: 0; font-size: 9px; line-height: 1.35; }
+  .dvn-quiz-button {
+    display: inline-flex;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ef4080, #df1665);
+    box-shadow: 0 8px 17px rgba(197, 29, 93, .24);
+    color: #fff;
+    font: 700 11px 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+  }
+  .dvn-quiz-button span { font-size: 17px; font-weight: 400; }
+  .dvn-quiz-meta { display: block; margin-top: 4px; color: #6f5963; font-size: 6px; text-align: center; }
+
+  .dvn-why { padding: 0 38px 9px; }
+  .dvn-why .dvn-section-heading h2 { font-size: 23px; font-style: italic; }
+  .dvn-why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 8px; margin-top: 9px; }
+  .dvn-why-item {
+    display: grid;
+    min-height: 58px;
+    grid-template-columns: 31px 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 8px 10px;
+    border: 1px solid rgba(225,78,129,.13);
+    border-radius: 10px;
+    background: rgba(255,255,255,.66);
+  }
+  .dvn-why-number {
+    display: grid;
+    width: 27px;
+    height: 27px;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #f66e9a, #df1b67);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    box-shadow: 0 4px 9px rgba(216, 31, 99, .18);
+  }
+  .dvn-why-item h3 { margin: 0 0 2px; color: var(--dvn-rose); font-size: 10px; line-height: 1.2; }
+  .dvn-why-item p { margin: 0; color: #69545e; font-size: 7.5px; line-height: 1.3; }
+
+  .dvn-guarantee {
+    margin: 0 31px 10px;
+    padding: 10px 20px 13px;
+    border: 1px solid rgba(226,78,131,.14);
+    border-radius: 15px;
+    background: rgba(255,255,255,.55);
+  }
+  .dvn-guarantee h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 9px;
+    color: #a22a5c;
+    font-family: Georgia, serif;
+    font-size: 19px;
+  }
+  .dvn-guarantee h2 img { width: 30px; height: 30px; object-fit: contain; }
+  .dvn-guarantee-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .dvn-guarantee-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+  .dvn-guarantee-list li { position: relative; padding-left: 17px; font-size: 7.7px; line-height: 1.25; }
+  .dvn-guarantee-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    display: grid;
+    width: 12px;
+    height: 12px;
+    place-items: center;
+    border-radius: 50%;
+    background: #ff93b3;
+    color: #fff;
+    font-size: 7px;
+  }
+
+  .dvn-promo {
+    position: relative;
+    display: grid;
+    min-height: 72px;
+    grid-template-columns: 88px 1fr 205px;
+    align-items: center;
+    gap: 7px;
+    margin: 0 37px 8px;
+    padding: 7px 22px 7px 11px;
+    border-radius: 14px;
+    background: linear-gradient(105deg, #f23d7c, #d60e5f);
+    box-shadow: 0 13px 26px rgba(185, 21, 86, .2);
+    color: #fff;
+  }
+  .dvn-promo > img { width: 61px; height: 61px; object-fit: contain; justify-self: center; }
+  .dvn-promo p { margin: 0; font-size: 9px; }
+  .dvn-promo h2 { margin: 2px 0 0; color: #fff; font-size: 23px; font-style: italic; }
+  .dvn-promo .dvn-wa-button { min-height: 36px; padding: 0 17px; font-size: 10px; }
+  .dvn-promo small { display: block; margin-top: 4px; font-size: 6.5px; text-align: center; }
+
+  .dvn-faq { position: relative; padding: 0 42px 9px; }
+  .dvn-faq .dvn-section-heading h2 { font-size: 24px; font-style: italic; }
+  .dvn-faq-columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 13px; margin-top: 7px; }
+  .dvn-faq details {
+    border: 1px solid rgba(225,78,129,.13);
+    border-radius: 999px;
+    background: rgba(255,255,255,.72);
+    font-size: 7.5px;
+  }
+  .dvn-faq summary {
+    display: grid;
+    min-height: 24px;
+    grid-template-columns: 18px 1fr 14px;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 7px;
+    list-style: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .dvn-faq summary::-webkit-details-marker { display: none; }
+  .dvn-faq summary::before {
+    content: '?';
+    display: grid;
+    width: 15px;
+    height: 15px;
+    place-items: center;
+    border: 1px solid #ee5b8e;
+    border-radius: 50%;
+    color: var(--dvn-rose);
+    font-size: 8px;
+  }
+  .dvn-faq summary::after { content: '+'; color: #a36b7e; font-size: 10px; }
+  .dvn-faq details[open] { border-radius: 10px; }
+  .dvn-faq details[open] summary::after { content: '−'; }
+  .dvn-faq details p { margin: 0; padding: 0 10px 8px 30px; color: #69545e; font-size: 7px; line-height: 1.45; }
+
+  .dvn-about {
+    display: grid;
+    min-height: 86px;
+    grid-template-columns: 130px 1fr 160px;
+    align-items: center;
+    gap: 12px;
+    margin: 0 34px 8px;
+    padding: 8px 13px;
+    border: 1px solid rgba(226,78,131,.14);
+    border-radius: 15px;
+    background: rgba(255,255,255,.58);
+  }
+  .dvn-about-product { width: 123px; height: 70px; object-fit: contain; }
+  .dvn-about h2 { margin: 0 0 4px; color: var(--dvn-rose); font-family: Georgia, serif; font-size: 15px; font-style: italic; }
+  .dvn-about p { margin: 0; color: #68535d; font-size: 7.5px; line-height: 1.4; }
+  .dvn-about-trust { display: grid; gap: 8px; }
+  .dvn-about-trust span { display: flex; align-items: center; gap: 7px; font-size: 8px; font-weight: 600; }
+  .dvn-about-trust img { width: 22px; height: 22px; object-fit: contain; }
+
+  .dvn-final {
+    position: relative;
+    min-height: 99px;
+    overflow: hidden;
+    padding: 9px 165px 8px;
+    text-align: center;
+  }
+  .dvn-final::before, .dvn-final::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    width: 125px;
+    height: 105px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: .8;
+  }
+  .dvn-final.is-nearby::before, .dvn-final.is-nearby::after { background-image: url('/images/dvn/reference2/decor/flowers-left.png'); }
+  .dvn-final::before { left: -28px; }
+  .dvn-final::after { right: -29px; transform: scaleX(-1); }
+  .dvn-final h2 { position: relative; z-index: 2; font-size: 23px; font-style: italic; }
+  .dvn-final p { position: relative; z-index: 2; margin: 3px 0 7px; font-size: 8px; }
+  .dvn-final .dvn-wa-button { position: relative; z-index: 2; min-height: 34px; padding: 0 21px; font-size: 10px; }
+  .dvn-final-trust {
+    position: absolute;
+    z-index: 2;
+    top: 28px;
+    display: grid;
+    gap: 8px;
+    color: #6b4d59;
+    font-size: 7px;
+    font-weight: 700;
+    text-align: left;
+  }
+  .dvn-final-trust--left { left: 108px; }
+  .dvn-final-trust--right { right: 105px; }
+
+  .dvn-footer {
+    display: grid;
+    min-height: 92px;
+    grid-template-columns: 175px 1fr 165px;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 38px;
+    background: var(--dvn-footer);
+    color: #fff;
+  }
+  .dvn-footer-brand { display: flex; align-items: center; gap: 13px; }
+  .dvn-footer-logo { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 40px; letter-spacing: .08em; white-space: nowrap; }
+  .dvn-footer-tagline { color: #f0b4cb; font-size: 7px; line-height: 1.35; }
+  .dvn-footer-copy { color: #d9c5cf; font-size: 6.7px; line-height: 1.7; text-align: center; }
+  .dvn-footer-copy a { color: #fff; text-decoration: none; }
+  .dvn-footer-social { color: #f2dce5; font-size: 8px; text-align: right; }
+  .dvn-footer-social strong { display: block; margin-bottom: 6px; font-size: 12px; letter-spacing: .15em; }
+
+  .dvn-floating-chat {
+    position: fixed;
+    z-index: 80;
+    right: max(12px, calc(50vw - 350px));
+    bottom: 12px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .dvn-wa-launcher {
+    position: relative;
+    display: grid;
+    width: min(660px, calc(100vw - 24px));
+    min-height: 76px;
+    grid-template-columns: 66px minmax(0, 1fr) 55px;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px 6px 7px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(115deg, #25d978 0%, #1dbf61 58%, #15a956 100%);
+    box-shadow: 0 16px 34px rgba(19,151,77,.28), inset 0 1px rgba(255,255,255,.2);
+    color: #fff;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .dvn-wa-launcher__radar {
+    position: relative;
+    display: grid;
+    width: 60px;
+    height: 60px;
+    place-items: center;
+    border-radius: 50%;
+  }
+  .dvn-wa-launcher__radar::before,
+  .dvn-wa-launcher__radar::after {
+    position: absolute;
+    inset: 1px;
+    border: 2px solid rgba(255,255,255,.72);
+    border-radius: 50%;
+    content: '';
+    opacity: .75;
+  }
+  .dvn-wa-launcher__radar::after { inset: -4px; border-color: rgba(151,255,190,.4); }
+  html.dvn-motion-ready .dvn-wa-launcher__radar::before {
+    animation: dvn-chat-radar 2.4s ease-out infinite;
+  }
+  html.dvn-motion-ready .dvn-wa-launcher__radar::after {
+    animation: dvn-chat-radar 2.4s .75s ease-out infinite;
+  }
+  .dvn-wa-launcher__avatar {
+    position: relative;
+    z-index: 1;
+    width: 52px;
+    height: 52px;
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 5px 14px rgba(0,92,43,.22);
+  }
+  .dvn-wa-launcher__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 12%;
+    transform: scale(1.18);
+  }
+  .dvn-wa-launcher__copy { min-width: 0; }
+  .dvn-wa-launcher__copy strong {
+    display: block;
+    overflow: hidden;
+    font-size: clamp(14px, 2.6vw, 20px);
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dvn-wa-launcher__copy small {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: clamp(9px, 1.8vw, 13px);
+    line-height: 1;
+    opacity: .96;
+    white-space: nowrap;
+  }
+  .dvn-wa-launcher__copy small::before {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border: 3px solid rgba(255,255,255,.62);
+    border-radius: 50%;
+    background: #d8ffe5;
+    content: '';
+    box-shadow: 0 0 0 3px rgba(255,255,255,.14);
+  }
+  .dvn-wa-launcher__icon {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 50%;
+    background: rgba(255,255,255,.19);
+  }
+  .dvn-wa-launcher__icon img { width: 29px; height: 29px; object-fit: contain; }
+  .dvn-chat-widget { position: relative; }
+  .dvn-chat-launcher {
+    position: relative;
+    display: grid;
+    width: 66px;
+    height: 66px;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: linear-gradient(115deg, #25d978 0%, #1dbf61 58%, #15a956 100%);
+    box-shadow: 0 14px 28px rgba(19,151,77,.3), inset 0 1px rgba(255,255,255,.2);
+    color: #fff;
+    cursor: pointer;
+  }
+  .dvn-chat-launcher__radar {
+    position: relative;
+    display: grid;
+    width: 62px;
+    height: 62px;
+    place-items: center;
+    border-radius: 50%;
+  }
+  .dvn-chat-launcher__radar::before,
+  .dvn-chat-launcher__radar::after {
+    position: absolute;
+    inset: 1px;
+    border: 2px solid rgba(219,255,232,.72);
+    border-radius: 50%;
+    content: '';
+    opacity: .75;
+  }
+  .dvn-chat-launcher__radar::after { inset: -4px; border-color: rgba(151,255,190,.4); }
+  html.dvn-motion-ready .dvn-floating-chat.is-bouncing .dvn-chat-launcher__radar::before {
+    animation: dvn-chat-radar 2.4s ease-out infinite;
+  }
+  html.dvn-motion-ready .dvn-floating-chat.is-bouncing .dvn-chat-launcher__radar::after {
+    animation: dvn-chat-radar 2.4s .75s ease-out infinite;
+  }
+  @keyframes dvn-chat-radar {
+    0% { scale: .82; opacity: .78; }
+    72%, 100% { scale: 1.25; opacity: 0; }
+  }
+  .dvn-chat-launcher__avatar {
+    position: relative;
+    z-index: 1;
+    width: 52px;
+    height: 52px;
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 5px 14px rgba(0,92,43,.22);
+  }
+  .dvn-chat-launcher__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 12%;
+    transform: scale(1.18);
+  }
+  .dvn-chat-badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    display: grid;
+    min-width: 23px;
+    height: 23px;
+    padding: 0 5px;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #8d1b4b;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .dvn-chat-badge[hidden] { display: none; }
+  html.dvn-motion-ready .dvn-floating-chat.is-bouncing .dvn-chat-launcher { animation: dvn-chat-bounce 3.4s ease-in-out infinite; }
+  @keyframes dvn-chat-bounce {
+    0%, 70%, 100% { transform: translateY(0) scale(1); }
+    76% { transform: translateY(-5px) scale(1.012); }
+    82% { transform: translateY(1px) scale(.998); }
+    88% { transform: translateY(-2px) scale(1.006); }
+  }
+  .dvn-chat-panel {
+    position: absolute;
+    right: 0;
+    bottom: 78px;
+    width: min(340px, calc(100vw - 28px));
+    overflow: hidden;
+    border: 1px solid rgba(99,56,72,.13);
+    border-radius: 22px;
+    background: #efe7df;
+    box-shadow: 0 24px 65px rgba(75,27,48,.28);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(18px) scale(.94);
+    transform-origin: right bottom;
+    visibility: hidden;
+    transition: opacity .24s ease, transform .24s ease;
+  }
+  .dvn-floating-chat.is-open .dvn-chat-panel { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); visibility: visible; }
+  .dvn-chat-header {
+    display: grid;
+    grid-template-columns: 42px 1fr 34px;
+    align-items: center;
+    gap: 9px;
+    min-height: 68px;
+    padding: 10px 11px 10px 13px;
+    background: linear-gradient(125deg, #1fa96a, #128a54);
+    color: #fff;
+  }
+  .dvn-chat-header__avatar {
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,.8);
+    border-radius: 50%;
+    background: #fff;
+  }
+  .dvn-chat-header__avatar img,
+  .dvn-chat-message__avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; transform: scale(1.15); }
+  .dvn-chat-header strong { display: block; font-size: 13px; line-height: 1.2; }
+  .dvn-chat-header small { display: flex; align-items: center; gap: 5px; margin-top: 3px; font-size: 8px; opacity: .92; }
+  .dvn-chat-header small::before { width: 6px; height: 6px; border-radius: 50%; background: #9bffb7; content: ''; }
+  .dvn-chat-close {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.13);
+    color: #fff;
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .dvn-chat-messages {
+    display: grid;
+    max-height: min(58vh, 420px);
+    gap: 9px;
+    overflow-y: auto;
+    padding: 13px 12px 15px;
+    background:
+      radial-gradient(circle at 12px 12px, rgba(255,255,255,.3) 0 2px, transparent 2.5px) 0 0 / 24px 24px,
+      linear-gradient(rgba(239,231,223,.96), rgba(239,231,223,.96));
+    scroll-behavior: smooth;
+  }
+  .dvn-chat-message { display: grid; grid-template-columns: 30px minmax(0,1fr); align-items: end; gap: 7px; }
+  .dvn-chat-message[hidden] { display: none; }
+  .dvn-chat-message__avatar {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 3px 8px rgba(84,42,58,.1);
+  }
+  .dvn-chat-bubble {
+    position: relative;
+    padding: 10px 12px 9px;
+    border-radius: 15px 15px 15px 3px;
+    background: #fff;
+    color: #3e2e35;
+    font-size: 11px;
+    line-height: 1.42;
+    box-shadow: 0 4px 12px rgba(85,49,62,.06);
+  }
+  .dvn-chat-bubble strong { color: #962d5a; }
+  .dvn-chat-bubble time { display: block; margin-top: 3px; color: #795c69; font-size: 6px; text-align: right; }
+  .dvn-chat-typing .dvn-chat-bubble { display: flex; width: 50px; min-height: 34px; align-items: center; gap: 4px; }
+  .dvn-chat-typing i { width: 7px; height: 7px; border-radius: 50%; background: #a8959e; animation: dvn-chat-dot 1s ease-in-out infinite; }
+  .dvn-chat-typing i:nth-child(2) { animation-delay: .14s; }
+  .dvn-chat-typing i:nth-child(3) { animation-delay: .28s; }
+  @keyframes dvn-chat-dot { 0%, 60%, 100% { transform: translateY(0); opacity: .6; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .dvn-chat-actions { padding: 0 12px 14px 49px; background: #efe7df; }
+  .dvn-chat-actions[hidden] { display: none; }
+  .dvn-chat-wa {
+    display: flex;
+    min-height: 43px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, #26d570, #14b75d);
+    box-shadow: 0 10px 20px rgba(15,153,78,.24);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .dvn-chat-wa img { width: 20px; height: 20px; object-fit: contain; }
+  .dvn-chat-privacy { display: block; margin-top: 7px; color: #876e79; font-size: 7px; line-height: 1.35; text-align: center; }
+  .dvn-chat-privacy span { color: #ca356f; }
+
+  .dvn-quiz-dialog {
+    width: min(92vw, 430px);
+    max-height: 88vh;
+    overflow: auto;
+    border: 0;
+    border-radius: 22px;
+    padding: 0;
+    background: #fff7fa;
+    color: var(--dvn-text);
+    box-shadow: 0 25px 80px rgba(76,20,46,.32);
+  }
+  .dvn-quiz-dialog::backdrop { background: rgba(55,24,42,.57); backdrop-filter: blur(4px); }
+  .dvn-quiz-dialog header { position: relative; padding: 20px 48px 13px; background: linear-gradient(120deg,#ffd9e7,#fff3f7); text-align: center; }
+  .dvn-quiz-dialog header h2 { margin: 0; color: var(--dvn-rose); font-family: Georgia, serif; font-size: 24px; }
+  .dvn-quiz-close { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; color: #9c4c6b; font-size: 25px; cursor: pointer; }
+  .dvn-quiz-form { display: grid; gap: 14px; padding: 18px 22px 22px; }
+  .dvn-quiz-question { margin: 0; padding: 12px; border: 1px solid #f2bfd2; border-radius: 13px; background: #fff; }
+  .dvn-quiz-question legend { padding: 0 5px; color: #a72659; font-size: 12px; font-weight: 800; }
+  .dvn-quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+  .dvn-quiz-options label { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+  .dvn-quiz-form .dvn-wa-button { width: 100%; }
+  .dvn-quiz-summary { margin: 0; padding: 10px 12px; border-radius: 12px; background: #fff0f5; color: #5b3a4a; font-size: 13px; line-height: 1.4; }
+
+  @media (max-width: 480px) {
+    .dvn-ref-page { width: 100%; }
+    .dvn-hero { min-height: 430px; padding: 14px 14px 0; }
+    .dvn-hero-title { font-size: clamp(38px, 11vw, 48px); }
+    .dvn-hero-card { height: 320px; }
+    .dvn-hero-copy { width: 55%; padding: 19px 0 0 18px; }
+    .dvn-hero-copy h2 { font-size: 28px; line-height: .86; }
+    .dvn-hero-copy h2 span { margin-top: 5px; font-size: 18px; }
+    .dvn-benefit-list { gap: 5px; }
+    .dvn-benefit-list li { grid-template-columns: 17px 1fr; gap: 5px; font-size: 8.2px; }
+    .dvn-benefit-list li::before { width: 16px; height: 16px; font-size: 8px; }
+    .dvn-hero-product { left: 35%; bottom: 25px; width: 34%; }
+    .dvn-hero-model { top: 7px; right: -5%; width: 56%; }
+    .dvn-superbrand { right: 9px; bottom: 14px; width: 67px; }
+    .dvn-handwritten {
+      display: block;
+      left: 51%;
+      top: 72px;
+      width: 67px;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .dvn-hero-trust {
+      left: 18px;
+      bottom: 12px;
+      width: 55%;
+      gap: 3px;
+      margin: 0;
+      font-size: 5.7px;
+      line-height: 1.15;
+    }
+    .dvn-hero-trust span { gap: 3px; }
+    .dvn-hero-trust b { width: 17px; height: 17px; flex: 0 0 17px; font-size: 7px; }
+    .dvn-value-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 9px 14px 11px; }
+    .dvn-value-card {
+      min-height: 70px;
+      grid-template-columns: 31px minmax(0, 1fr);
+      gap: 3px;
+      padding: 6px 5px;
+      font-size: 7.3px;
+      line-height: 1.3;
+    }
+    .dvn-value-card img { width: 29px; height: 29px; }
+    .dvn-consult { min-height: 134px; grid-template-columns: 110px minmax(0, 1fr) 53px; padding: 0 10px; }
+    .dvn-consult-model { left: 5px; width: 138px; bottom: -72px; }
+    .dvn-consult-bubble { left: 6px; top: 18px; width: 72px; padding: 8px 6px; font-size: 6px; }
+    .dvn-consult-copy { grid-column: 2; }
+    .dvn-consult-copy h2 { font-size: 19px; }
+    .dvn-consult-trust { display: grid; grid-column: 3; gap: 7px; font-size: 6px; }
+    .dvn-consult-trust span { gap: 3px; }
+    .dvn-consult-trust img { width: 17px; height: 17px; }
+    .dvn-wa-button { padding-inline: 15px; font-size: 11px; }
+    .dvn-ingredients { padding: 16px 14px 0; }
+    .dvn-section-heading h2 { font-size: 28px; }
+    .dvn-ingredient-stage { height: 226px; grid-template-columns: 57% 43%; padding-top: 0; }
+    .dvn-ingredient-product { top: auto; left: -7px; bottom: 6px; width: 58%; height: 210px; }
+    .dvn-ingredient-panel { grid-column: 2; min-height: 188px; padding: 10px 7px 8px; }
+    .dvn-ingredient-panel h3 { font-size: 12px; }
+    .dvn-ingredient-panel > p { margin-bottom: 6px; font-size: 6.7px; }
+    .dvn-seven-grid { gap: 4px 1px; }
+    .dvn-seven-item { font-size: 4.7px; }
+    .dvn-seven-item img { width: 28px; height: 28px; margin-bottom: 2px; }
+    .dvn-four-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+    .dvn-ingredient-card { min-height: 123px; padding: 8px 4px 6px; border-radius: 12px; }
+    .dvn-ingredient-card img { width: 33px; height: 33px; }
+    .dvn-ingredient-card h3 { margin: 2px 0 3px; font-size: 9px; line-height: 1.05; }
+    .dvn-ingredient-card .country { padding: 2px 4px; font-size: 6px; }
+    .dvn-ingredient-card p { font-size: 6.3px; line-height: 1.25; }
+    .dvn-quote-card { grid-template-columns: 90px 1fr; margin: 0 14px 10px; }
+    .dvn-quote-copy blockquote { font-size: 18px; }
+    .dvn-quiz-teaser { grid-template-columns: 60px 1fr; margin: 0 14px 14px; }
+    .dvn-quiz-teaser > div:last-child { grid-column: 1 / -1; }
+    .dvn-quiz-button { width: 100%; }
+    .dvn-why { padding: 0 14px 12px; }
+    .dvn-why-grid { grid-template-columns: 1fr; }
+    .dvn-why-item { min-height: 64px; }
+    .dvn-guarantee { margin: 0 14px 12px; }
+    .dvn-guarantee-grid { grid-template-columns: 1fr; }
+    .dvn-promo { grid-template-columns: 65px 1fr; margin: 0 14px 12px; padding-right: 12px; }
+    .dvn-promo > img { width: 55px; }
+    .dvn-promo > div:last-child { grid-column: 1 / -1; }
+    .dvn-promo .dvn-wa-button { width: 100%; }
+    .dvn-faq { padding: 0 14px 12px; }
+    .dvn-faq-columns { grid-template-columns: 1fr; }
+    .dvn-faq summary { min-height: 34px; font-size: 9px; }
+    .dvn-faq details p { font-size: 8.5px; }
+    .dvn-about { grid-template-columns: 95px 1fr; margin: 0 14px 10px; }
+    .dvn-about-product { width: 90px; }
+    .dvn-about-trust { grid-column: 1 / -1; grid-template-columns: repeat(3, 1fr); }
+    .dvn-about-trust span { justify-content: center; text-align: center; }
+    .dvn-final { min-height: 143px; padding: 14px 76px; }
+    .dvn-final-trust { display: grid; top: 47px; width: 66px; gap: 6px; font-size: 5.8px; line-height: 1.25; }
+    .dvn-final-trust--left { left: 8px; }
+    .dvn-final-trust--right { right: 8px; }
+    .dvn-footer { grid-template-columns: 1fr; gap: 8px; padding: 19px 22px 78px; text-align: center; }
+    .dvn-footer-brand { justify-content: center; }
+    .dvn-footer-social { text-align: center; }
+    .dvn-floating-chat { right: 9px; bottom: 9px; gap: 9px; }
+    .dvn-chat-panel { bottom: 70px; }
+    .dvn-wa-launcher {
+      width: calc(100vw - 18px);
+      min-height: 68px;
+      grid-template-columns: 57px minmax(0, 1fr) 48px;
+      gap: 8px;
+      padding: 5px 9px 5px 5px;
+    }
+    .dvn-wa-launcher__radar { width: 56px; height: 56px; }
+    .dvn-wa-launcher__avatar { width: 48px; height: 48px; }
+    .dvn-wa-launcher__icon { width: 45px; height: 45px; }
+    .dvn-wa-launcher__icon img { width: 25px; height: 25px; }
+    .dvn-chat-launcher { width: 58px; height: 58px; }
+    .dvn-chat-launcher__radar { width: 54px; height: 54px; }
+    .dvn-chat-launcher__avatar { width: 46px; height: 46px; }
+    .dvn-chat-messages { max-height: min(54vh, 390px); }
+
+    /* ── SXO-004 readability floor (mobile) ─────────────────────────────
+       Body text >= 12px, labels >= 10px. Sections whose text could not fit
+       their scaled-down desktop grid are re-laid out (stacked / 2 columns).
+       The "Kebaikan dari DVN" card has its own block near the end. */
+    .dvn-value-strip { grid-template-columns: 1fr; gap: 8px; }
+    .dvn-value-card { min-height: 0; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding: 8px 12px; font-size: 12px; }
+    .dvn-value-card img { width: 32px; height: 32px; }
+
+    .dvn-consult { grid-template-columns: 104px minmax(0, 1fr); padding: 0 12px 0 8px; }
+    .dvn-consult-trust { display: none; }
+    .dvn-consult-bubble { width: 84px; font-size: 10px; }
+    .dvn-consult-copy p { font-size: 11px; }
+    .dvn-consult-copy .dvn-consult-note { font-size: 10.5px !important; }
+    .dvn-wa-button { font-size: 13px; }
+
+    .dvn-section-heading p { font-size: 12px; }
+    .dvn-ingredient-stage { display: block; height: auto; margin-bottom: 10px; }
+    .dvn-ingredient-product { position: relative; left: 0; bottom: auto; width: 100%; height: 210px; }
+    .dvn-ingredient-panel { min-height: 0; margin-top: 10px; padding: 14px 12px 12px; }
+    .dvn-ingredient-panel h3 { font-size: 15px; }
+    .dvn-ingredient-panel > p { margin-bottom: 10px; font-size: 12px; }
+    .dvn-seven-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 6px; }
+    .dvn-seven-item:nth-child(n) { grid-column: auto; }
+    .dvn-seven-item { font-size: 10.5px; line-height: 1.2; }
+    .dvn-seven-item img { width: 36px; height: 36px; margin-bottom: 4px; }
+    .dvn-seven-item small { font-size: 10px; }
+    .dvn-four-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .dvn-ingredient-card { min-height: 0; padding: 12px 8px 10px; }
+    .dvn-ingredient-card h3 { font-size: 13px; }
+    .dvn-ingredient-card .country { padding: 2px 8px; font-size: 10px; }
+    .dvn-ingredient-card p { font-size: 11.5px; line-height: 1.35; }
+
+    .dvn-quote-copy p { font-size: 12px; }
+    .dvn-quiz-teaser p { font-size: 12px; }
+    .dvn-quiz-meta { font-size: 10px; }
+    .dvn-why-item h3 { font-size: 13px; }
+    .dvn-why-item p { font-size: 12px; line-height: 1.4; }
+    .dvn-guarantee-list li { font-size: 12px; }
+    .dvn-promo p { font-size: 11px; }
+    .dvn-promo small { font-size: 10px; }
+    .dvn-faq summary { min-height: 44px; font-size: 13px; }
+    .dvn-faq details p { font-size: 12.5px; line-height: 1.45; }
+    .dvn-about p { font-size: 12px; line-height: 1.45; }
+    .dvn-about-trust span { font-size: 10.5px; }
+
+    .dvn-final { padding: 16px 16px 18px; }
+    .dvn-final > p { font-size: 12px; }
+    .dvn-final-trust { position: static; display: flex; width: auto; justify-content: center; gap: 12px; margin-top: 10px; font-size: 10.5px; }
+    .dvn-final-trust--left { margin-top: 0; margin-bottom: 10px; }
+
+    .dvn-footer-tagline { font-size: 10px; }
+    .dvn-footer-copy { font-size: 11px; line-height: 1.6; }
+    .dvn-footer-copy nav a { display: inline-block; padding: 6px 2px; font-size: 12px; }
+    .dvn-footer-social { font-size: 10px; }
+    .dvn-wa-launcher__copy small { font-size: 11px; }
+    .dvn-chat-header small { font-size: 11px; }
+  }
+
+  /* SXO-004 readability floor (tablet/desktop): body >= 12px, labels >= 10px
+     inside the 724px column. Grids are kept; only the final CTA side labels
+     move under the button so they cannot collide with the heading.
+     "Kebaikan dari DVN" card: see its dedicated block below. */
+  @media (min-width: 481px) {
+    .dvn-section-heading p { font-size: 12.5px; }
+    .dvn-value-card { font-size: 12px; }
+    .dvn-consult-bubble { font-size: 10px; }
+    .dvn-consult-copy p { font-size: 11.5px; }
+    .dvn-consult-copy .dvn-consult-note { font-size: 11px !important; }
+    .dvn-consult-trust { font-size: 11px; }
+    .dvn-wa-button { font-size: 13px; }
+    .dvn-ingredient-panel > p { font-size: 12px; }
+    /* Larger text makes the panel taller than the fixed 226px stage; let the
+       stage grow and top-align so it never overlaps the heading or cards. */
+    .dvn-ingredient-stage { height: auto; min-height: 226px; align-items: start; margin-bottom: 12px; }
+    /* Columns size to their longest word so "L-Glutathione" stays on one
+       line (equal 1fr columns are ~60px; the name needs ~72px). */
+    .dvn-seven-grid { grid-template-columns: repeat(4, auto); }
+    .dvn-seven-item { font-size: 10.5px; line-height: 1.2; }
+    .dvn-seven-item small { font-size: 10px; }
+    .dvn-ingredient-card .country { font-size: 10px; }
+    .dvn-ingredient-card p { font-size: 11.5px; line-height: 1.35; }
+    .dvn-quote-copy p { font-size: 12.5px; }
+    .dvn-quiz-teaser p { font-size: 12.5px; }
+    .dvn-quiz-meta { font-size: 10.5px; }
+    .dvn-why-item h3 { font-size: 13px; }
+    .dvn-why-item p { font-size: 12px; line-height: 1.4; }
+    .dvn-guarantee-list li { font-size: 12px; }
+    .dvn-promo p { font-size: 12px; }
+    .dvn-promo small { font-size: 10.5px; }
+    .dvn-faq summary { font-size: 13.5px; }
+    .dvn-faq details p { font-size: 13px; line-height: 1.45; }
+    .dvn-about p { font-size: 12.5px; line-height: 1.45; }
+    .dvn-about-trust span { font-size: 11px; }
+    .dvn-final { padding: 16px 24px 18px; }
+    .dvn-final > p { font-size: 12.5px; }
+    .dvn-final-trust { position: static; display: flex; width: auto; justify-content: center; gap: 14px; margin-top: 10px; font-size: 11px; }
+    .dvn-final-trust--left { margin-top: 0; margin-bottom: 10px; }
+    /* Room for the fixed WA launcher (76px + 12px offset) so it never covers
+       the footer links, as the mobile block already does with 78px. */
+    .dvn-footer { padding-bottom: 100px; }
+    .dvn-footer-tagline { font-size: 11px; }
+    .dvn-footer-copy { font-size: 11.5px; line-height: 1.6; }
+    .dvn-footer-copy nav a { display: inline-block; padding: 6px 2px; font-size: 12.5px; }
+    .dvn-footer-social { font-size: 11px; }
+  }
+
+  /* ── "Kebaikan dari DVN" card + consult bubble readability ────────────
+     Approved by Ray (26 Sep 2026): styling only — texts, images and the
+     card's composition stay as designed. The handwritten line gets a dark
+     rose colour with a soft white halo (it sat pink-on-pink over the
+     bottle), benefits/trust labels are enlarged, the trust row becomes a
+     translucent pill under the product so nothing overlaps, and the
+     consult bubble becomes an upright speech bubble. */
+  .dvn-handwritten {
+    color: var(--dvn-rose-dark);
+    text-shadow: 0 0 2px #fff, 0 0 6px rgba(255, 255, 255, .95), 0 0 12px rgba(255, 255, 255, .85);
+  }
+  .dvn-hero-trust {
+    display: flex;
+    width: auto;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid rgba(222, 80, 134, .14);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 4px 12px rgba(185, 57, 104, .08);
+  }
+  .dvn-hero-trust span { white-space: nowrap; }
+  .dvn-consult-bubble {
+    display: grid;
+    place-items: center;
+    padding: 9px 10px;
+    border-radius: 18px;
+    line-height: 1.25;
+    transform: rotate(-3deg);
+    box-shadow: 0 6px 14px rgba(120, 20, 60, .18);
+  }
+  .dvn-consult-bubble::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    bottom: -6px;
+    width: 13px;
+    height: 13px;
+    border-radius: 2px;
+    background: inherit;
+    transform: rotate(45deg);
+  }
+
+  @media (max-width: 480px) {
+    /* The product box scales with the viewport (34% wide), so the card grows
+       with it: keeps ~15px between the last benefit line and the box from
+       381px to 480px. */
+    .dvn-hero-card { height: calc(253px + 32vw); }
+    /* The taller card exposed the model photo's straight bottom edge; fade
+       it out like the main hero visual does. */
+    .dvn-hero-model {
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 100%);
+    }
+    .dvn-benefit-list { gap: 7px; }
+    .dvn-benefit-list li { grid-template-columns: 18px 1fr; gap: 6px; font-size: 11px; line-height: 1.3; }
+    .dvn-benefit-list li::before { width: 17px; height: 17px; font-size: 9px; }
+    .dvn-hero-product { bottom: 58px; }
+    /* Handwritten line sits in the empty space left of the product box and
+       above the trust pill: horizontally centred in the box's left gutter
+       (0..35% of the card), vertically centred on the box (which is 34% of
+       the card width, ~1.05 aspect, bottom 58px). */
+    .dvn-handwritten {
+      left: calc(17.5% - 40px);
+      top: auto;
+      bottom: calc(23px + 16.2vw);
+      width: 80px;
+      font-size: 15px;
+      line-height: 1.02;
+    }
+    .dvn-hero-trust { left: 12px; bottom: 12px; gap: 8px; padding: 6px 8px; font-size: 9.5px; line-height: 1.2; }
+    .dvn-hero-trust span { gap: 4px; }
+    .dvn-hero-trust b { width: 18px; height: 18px; flex: 0 0 18px; font-size: 9px; }
+    /* Bubble sits above the consultant's head as her speech bubble (two
+       lines, tail pointing down); the photo moves down so it never covers
+       her face. */
+    .dvn-consult-model { bottom: -96px; }
+    .dvn-consult-bubble { left: 6px; top: 8px; width: 118px; padding: 7px 10px; font-size: 10px; }
+  }
+
+  /* Small phones: benefits wrap to more lines and the trust pill nears the
+     Superbrands badge, so give the card a little more room. */
+  @media (max-width: 380px) {
+    .dvn-hero-card { height: 404px; }
+    .dvn-hero-trust { left: 10px; gap: 6px; padding: 5px 6px; font-size: 9px; }
+    .dvn-hero-trust b { width: 16px; height: 16px; flex: 0 0 16px; font-size: 8px; }
+    .dvn-superbrand { width: 58px; }
+  }
+
+  @media (min-width: 481px) {
+    .dvn-hero-card { height: 330px; }
+    .dvn-hero-copy { width: 38%; }
+    .dvn-benefit-list { gap: 8px; }
+    .dvn-benefit-list li { grid-template-columns: 20px 1fr; font-size: 12px; line-height: 1.35; }
+    .dvn-hero-product { left: 40%; bottom: 62px; }
+    .dvn-hero-trust { left: 28px; bottom: 14px; gap: 14px; font-size: 11px; line-height: 1.2; }
+    .dvn-hero-trust span { gap: 5px; }
+    .dvn-hero-trust b { width: 21px; height: 21px; flex: 0 0 21px; font-size: 10px; }
+    /* Same speech-bubble placement as mobile: above the consultant's head,
+       two lines, photo lowered so her face stays clear. */
+    .dvn-consult-model { bottom: -136px; }
+    .dvn-consult-bubble { left: 22px; top: 10px; width: 150px; padding: 8px 12px; font-size: 11px; }
+  }
+
+  /* Narrow tablets: the card is narrower than the 724px column, so the trust
+     pill is condensed to stay clear of the Superbrands badge. */
+  @media (min-width: 481px) and (max-width: 700px) {
+    .dvn-hero-trust { gap: 8px; padding: 5px 8px; font-size: 10px; }
+    .dvn-hero-trust b { width: 18px; height: 18px; flex: 0 0 18px; font-size: 9px; }
+    .dvn-superbrand { width: 66px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .dvn-wa-button { transition: none; }
+    .dvn-floating-chat.is-bouncing .dvn-chat-launcher,
+    .dvn-floating-chat.is-bouncing .dvn-chat-launcher__radar::before,
+    .dvn-floating-chat.is-bouncing .dvn-chat-launcher__radar::after,
+    .dvn-wa-launcher__radar::before,
+    .dvn-wa-launcher__radar::after,
+    .dvn-chat-typing i { animation: none; }
+    .dvn-chat-panel { transition: none; }
+  }
+</style>
+
+<div class="dvn-ref-page" id="top">
+  <DVNClaudeHero />
+  <DVNVideoTestimonials />
+  <DVNAuthenticitySection />
+  <div class="dvn-reference-body">
+  <img class="dvn-decor dvn-decor-flower-left" src={deferredPixel} data-src="/images/dvn/reference2/decor/flowers-left.png" data-poster-lazy="true" alt="" width="397" height="281" loading="lazy" decoding="async" />
+  <img class="dvn-decor dvn-decor-flower-right" src={deferredPixel} data-src="/images/dvn/reference2/decor/flowers-right.png" data-poster-lazy="true" alt="" width="310" height="275" loading="lazy" decoding="async" />
+  <img class="dvn-decor dvn-decor-petal-one" src={deferredPixel} data-src="/images/dvn/reference2/decor/petal-1.png" data-poster-lazy="true" alt="" width="154" height="146" loading="lazy" decoding="async" />
+  <img class="dvn-decor dvn-decor-petal-two" src={deferredPixel} data-src="/images/dvn/reference2/decor/petal-2.png" data-poster-lazy="true" alt="" width="148" height="140" loading="lazy" decoding="async" />
+
+  <section class="dvn-hero" aria-labelledby="dvn-main-title">
+    <p class="dvn-hero-kicker">Rahasia Kulit Sehat &amp; Bercahaya</p>
+    <h2 id="dvn-main-title" class="dvn-serif dvn-hero-title">Kebaikan dari DVN</h2>
+    <p class="dvn-hero-subtitle">Dalam hidup sehat untuk melengkapi gaya hidup kamu</p>
+
+    <div class="dvn-hero-card">
+      <div class="dvn-hero-copy">
+        <h2 class="dvn-serif">Manfaat DVN <span>dengan collagen<br />untuk Keseharian Anda!</span></h2>
+        <ul class="dvn-benefit-list">
+          <li>Membantu memelihara kesehatan kulit dari dalam.</li>
+          <li>Mendukung rutinitas harian agar penampilan tetap segar.</li>
+          <li>Melengkapi gaya hidup sehat dan aktif.</li>
+        </ul>
+      </div>
+      <div class="dvn-hero-trust" aria-label="Sertifikasi dan standar">
+        <span><b>✓</b> Terdaftar<br />BPOM RI</span>
+        <span><b>ح</b> Bersertifikat<br />Halal MUI</span>
+        <span><b>◎</b> Standar<br />Internasional</span>
+      </div>
+      <div class="dvn-handwritten">Cantik<br />Sehat<br />Bersinar<br />Setiap Hari</div>
+      <div class="dvn-hero-product">
+        <img src="/images/dvn/reference2/product-collection-560w.webp" srcset="/images/dvn/reference2/product-collection-320w.webp 320w, /images/dvn/reference2/product-collection-560w.webp 560w" sizes="(max-width: 480px) 52vw, 362px" alt="Box dan botol DVN Collagen asli" width="560" height="699" loading="lazy" decoding="async" />
+      </div>
+      <img class="dvn-hero-model" src="/images/dvn/reference2/model-radiant-480w.webp" alt="Wanita memegang botol DVN Collagen" width="480" height="640" loading="lazy" decoding="async" />
+      <img class="dvn-superbrand" src="/images/dvn/reference2/badges/superbrands-160w.webp" alt="Superbrands Worldwide 2024" width="157" height="160" loading="lazy" decoding="async" />
+    </div>
+  </section>
+
+  <section class="dvn-value-strip" aria-label="Manfaat gaya hidup">
+    <article class="dvn-value-card"><img src="/images/dvn/reference2/icons/lightning-64w.webp" alt="" width="64" height="63" loading="lazy" decoding="async" /><p>Praktis: <strong>2 kali sehari</strong>, 1 tablet kunyah</p></article>
+    <article class="dvn-value-card"><img src="/images/dvn/reference2/icons/face-64w.webp" alt="" width="50" height="64" loading="lazy" decoding="async" /><p>Membantu memelihara <strong>kesehatan kulit</strong></p></article>
+    <article class="dvn-value-card"><img src="/images/dvn/reference2/icons/leaf-64w.webp" alt="" width="53" height="64" loading="lazy" decoding="async" /><p>Menjadi bagian dari <strong>pola hidup sehat</strong> dan aktif</p></article>
+  </section>
+
+  <section class="dvn-consult" aria-labelledby="dvn-consult-title">
+    <img class="dvn-consult-model" src="/images/dvn/reference2/consultant-white-blazer-320w.webp" alt="Konsultan kecantikan DVN" width="320" height="412" loading="lazy" decoding="async" />
+    <div class="dvn-consult-bubble">Punya pertanyaan seputar DVN?</div>
+    <div class="dvn-consult-copy">
+      <p>Siap mulai solusi dari dalam?</p>
+      <h2 id="dvn-consult-title" class="dvn-serif">Tanya Dulu, Konsultasi Gratis</h2>
+      <a class="dvn-wa-button" href={waLinks.consultBand} data-cta="consult_band">
+        <img src="/images/dvn/reference2/icons/whatsapp-64w.webp" alt="" width="64" height="62" loading="lazy" decoding="async" /> Tanya Lewat WhatsApp <small>→</small>
+      </a>
+      <p class="dvn-consult-note">Gratis Konsultasi · Bisa COD · Free Ongkir</p>
+    </div>
+    <div class="dvn-consult-trust" aria-label="Keunggulan layanan">
+      <span><img src="/images/dvn/reference2/trust/safe.svg" alt="" width="64" height="64" loading="lazy" decoding="async" /> Aman</span>
+      <span><img src="/images/dvn/reference2/trust/personal.svg" alt="" width="64" height="64" loading="lazy" decoding="async" /> Personal</span>
+      <span><img src="/images/dvn/reference2/trust/trusted.svg" alt="" width="64" height="64" loading="lazy" decoding="async" /> Terpercaya</span>
+    </div>
+  </section>
+
+  <section class="dvn-ingredients" aria-labelledby="dvn-ingredients-title" data-defer-decor>
+    <header class="dvn-section-heading">
+      <h2 id="dvn-ingredients-title" class="dvn-serif">DVN dengan collagen</h2>
+      <p>Menggabungkan collagen dengan 6 bahan pendukung <br />untuk membantu memelihara kesehatan kulit.</p>
+    </header>
+    <div class="dvn-ingredient-stage">
+      <div class="dvn-ingredient-product" role="img" aria-label="Box dan botol DVN Collagen dengan delima dan bunga sakura">
+        <div class="dvn-product-plinth"></div>
+        <img class="dvn-stage-pomegranate" src={deferredPixel} data-src="/images/dvn/reference2/ingredients/pomegranate-fruit.svg" data-poster-lazy="true" alt="" width="180" height="140" loading="lazy" decoding="async" />
+        <img class="dvn-stage-flowers" src={deferredPixel} data-src="/images/dvn/reference2/decor/flowers-left.png" data-poster-lazy="true" alt="" width="397" height="281" loading="lazy" decoding="async" />
+        <div class="dvn-ingredient-pack"><img src="/images/dvn/reference2/product-collection-320w.webp" srcset="/images/dvn/reference2/product-collection-320w.webp 320w, /images/dvn/reference2/product-collection-560w.webp 560w" sizes="(max-width: 480px) 49vw, 336px" alt="" width="320" height="400" loading="lazy" decoding="async" /></div>
+        <div class="dvn-stage-handwritten">Cantik<br />dari Dalam<small>dengan DVN</small></div>
+      </div>
+      <article class="dvn-ingredient-panel">
+        <h3>7 Bahan Aktif per Tablet:</h3>
+        <p>Komposisi setiap tablet kunyah sesuai label kemasan, untuk membantu memelihara kesehatan kulit.</p>
+        <div class="dvn-seven-grid" aria-label="Tujuh bahan aktif DVN per tablet sesuai label">
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/collagen-peptide.svg" alt="" width="96" height="96" loading="lazy" decoding="async" />Kolagen Ikan<br />Terhidrolisis<small>150 mg</small></div>
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/collagen-tripeptide.svg" alt="" width="96" height="96" loading="lazy" decoding="async" />Kolagen<br />Tripeptida<small>50 mg</small></div>
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/pomegranate.svg" alt="" width="96" height="96" loading="lazy" decoding="async" />Ekstrak Buah<br />Delima<small>25 mg</small></div>
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/vitamin-c.svg" alt="" width="96" height="96" loading="lazy" decoding="async" />Vitamin C<small>25 mg</small></div>
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/glutathione.svg" alt="" width="96" height="96" loading="lazy" decoding="async" /><span class="dvn-nowrap">L-Glutathione</span><small>25 mg</small></div>
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/sodium-hyaluronate.svg" alt="" width="96" height="96" loading="lazy" decoding="async" />Natrium<br />Hialuronat<small>15 mg</small></div>
+          <div class="dvn-seven-item"><img src="/images/dvn/reference2/ingredients/japanese-knotweed.svg" alt="" width="96" height="96" loading="lazy" decoding="async" />Ekstrak Akar<br />Knotweed Jepang<small>10 mg</small></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="dvn-four-grid" aria-label="Informasi label DVN">
+      <article class="dvn-ingredient-card"><img src="/images/dvn/reference2/ingredients/fact-dosage.svg" alt="" width="96" height="96" loading="lazy" decoding="async" /><h3>Aturan Pakai</h3><div class="country">Sesuai label</div><p>2 kali sehari, 1 tablet kunyah</p></article>
+      <article class="dvn-ingredient-card"><img src="/images/dvn/reference2/ingredients/fact-bottle.svg" alt="" width="96" height="96" loading="lazy" decoding="async" /><h3>Isi Kemasan</h3><div class="country">60 tablet</div><p>30 sajian per botol (1 sajian = 2 tablet)</p></article>
+      <article class="dvn-ingredient-card"><img src="/images/dvn/reference2/ingredients/fact-caution.svg" alt="" width="96" height="96" loading="lazy" decoding="async" /><h3>Perhatian</h3><div class="country">Sesuai label</div><p>Mengandung pemanis buatan sukralosa</p></article>
+      <article class="dvn-ingredient-card"><img src="/images/dvn/reference2/ingredients/fact-storage.svg" alt="" width="96" height="96" loading="lazy" decoding="async" /><h3>Penyimpanan</h3><div class="country">Di bawah 30°C</div><p>Simpan di tempat kering, jauhkan dari sinar matahari</p></article>
+    </div>
+  </section>
+
+  <section class="dvn-quote-card" aria-label="Perbandingan nilai harian">
+    <div class="dvn-coffee" aria-hidden="true">☕</div>
+    <div class="dvn-quote-copy">
+      <blockquote>“Investasi kecantikan hanya<br />secangkir kopi per hari”</blockquote>
+      <p>Satu botol berisi 60 tablet untuk 30 hari sesuai aturan pakai. Tanya CS untuk harga dan promo hari ini.</p>
+    </div>
+  </section>
+
+  <section class="dvn-quiz-teaser" aria-labelledby="dvn-quiz-teaser-title">
+    <img src="/images/dvn/reference2/icons/question-128w.webp" alt="" width="128" height="107" loading="lazy" decoding="async" />
+    <div><h2 id="dvn-quiz-teaser-title">Belum Yakin DVN Cocok untuk Kulitmu?</h2><p>Ambil kuis 30 detik untuk rekomendasi personal sesuai kondisi kulitmu.</p></div>
+    <div><button class="dvn-quiz-button" type="button" data-quiz-open>Ambil Kuis Sekarang <span>→</span></button><small class="dvn-quiz-meta"><span aria-hidden="true">◷</span> ~30 detik · <span aria-hidden="true">◆</span> Rekomendasi personal · <span aria-hidden="true">●</span> Tanpa daftar</small></div>
+  </section>
+
+  <section class="dvn-why" aria-labelledby="dvn-why-title">
+    <header class="dvn-section-heading">
+      <h2 id="dvn-why-title" class="dvn-serif">Kenapa Tidak Beli di Apotik atau Marketplace?</h2>
+      <p>Penjelasan singkat kenapa DVN hanya via dealer terverifikasi &amp; terdaftar</p>
+    </header>
+    <div class="dvn-why-grid">
+      {whyItems.map(([title, body], index) => (
+        <article class="dvn-why-item">
+          <div class="dvn-why-number">{index + 1}</div>
+          <div><h3>{title}</h3><p>{body}</p></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="dvn-guarantee" aria-labelledby="dvn-guarantee-title">
+    <h2 id="dvn-guarantee-title"><img src="/images/dvn/reference2/icons/shield-64w.webp" alt="" width="64" height="60" loading="lazy" decoding="async" /> Belanja dengan Tenang</h2>
+    <div class="dvn-guarantee-grid">
+      <ul class="dvn-guarantee-list"><li>Produk rusak saat pengiriman?</li><li>Bisa bayar COD</li><li>Konsultasi gratis via WhatsApp</li></ul>
+      <ul class="dvn-guarantee-list"><li><strong>Diganti</strong> sesuai <a href="/refund/">kebijakan pengembalian</a></li><li><strong>Cek produk dulu</strong>, baru bayar</li><li><strong>Sebelum &amp; sesudah</strong> pembelian</li></ul>
+      <ul class="dvn-guarantee-list"><li>Gratis ongkir ke seluruh Indonesia</li><li>Didukung sertifikat</li><li><strong>BPOM RI + Halal + GMP</strong></li></ul>
+    </div>
+  </section>
+
+  <section class="dvn-promo" aria-labelledby="dvn-promo-title">
+    <img src="/images/dvn/reference2/icons/gift-128w.webp" alt="" width="124" height="128" loading="lazy" decoding="async" />
+    <div><p>Cek dulu produk sebelum bayar</p><h2 id="dvn-promo-title" class="dvn-serif">Cek Ketersediaan &amp; Promo</h2></div>
+    <div><a class="dvn-wa-button" href={waLinks.promo} data-cta="promo"><img src="/images/dvn/reference2/icons/whatsapp-64w.webp" alt="" width="64" height="62" loading="lazy" decoding="async" /> Minta Promo Khusus <small>→</small></a><small>Website Penjualan DVN X RAYA</small></div>
+  </section>
+
+  <section class="dvn-faq" aria-labelledby="dvn-faq-title">
+    <header class="dvn-section-heading"><h2 id="dvn-faq-title" class="dvn-serif">Pertanyaan Umum</h2><p>Temukan jawaban untuk pertanyaan yang paling sering diajukan</p></header>
+    <div class="dvn-faq-columns">
+      {faqs.map(({ question, answer }) => <details><summary>{question}</summary><p>{answer}</p></details>)}
+    </div>
+  </section>
+
+  <section class="dvn-about" aria-labelledby="dvn-about-title">
+    <img class="dvn-about-product" src="/images/dvn/reference2/product-collection-320w.webp" srcset="/images/dvn/reference2/product-collection-320w.webp 320w, /images/dvn/reference2/product-collection-560w.webp 560w" sizes="(max-width: 480px) 31vw, 225px" alt="Kemasan DVN Collagen Indonesia" width="320" height="400" loading="lazy" decoding="async" />
+    <div><h2 id="dvn-about-title">Tentang DVN Collagen Indonesia</h2><p>DVN adalah suplemen kecantikan premium dari Wellous yang diformulasikan dengan 7 bahan aktif dan diproduksi di fasilitas bersertifikat GMP. Kami berkomitmen mendukung setiap wanita Indonesia untuk tampil lebih sehat, percaya diri, dan bersinar dari dalam.</p></div>
+    <div class="dvn-about-trust"><span><img src="/images/dvn/reference2/icons/shield-64w.webp" alt="" width="64" height="60" loading="lazy" decoding="async" /> Kualitas Premium</span><span><img src="/images/dvn/reference2/icons/face-64w.webp" alt="" width="50" height="64" loading="lazy" decoding="async" /> Dipercaya Banyak Wanita</span><span><img src="/images/dvn/reference2/icons/heart-64w.webp" alt="" width="64" height="54" loading="lazy" decoding="async" /> Terdaftar BPOM</span></div>
+  </section>
+
+  <section class="dvn-final" aria-labelledby="dvn-final-title" data-defer-decor>
+    <div class="dvn-final-trust dvn-final-trust--left"><span><span aria-hidden="true">◉</span> Produk Original</span><span><span aria-hidden="true">▣</span> Pengiriman Seluruh Indonesia</span></div>
+    <h2 id="dvn-final-title" class="dvn-serif">Mulai Perjalanan Kulit Sehatmu Hari Ini</h2>
+    <p>Konsultasi gratis, proses mudah, bisa COD, dan gratis ongkir.</p>
+    <a class="dvn-wa-button" href={waLinks.final} data-cta="final_cta"><img src="/images/dvn/reference2/icons/whatsapp-64w.webp" alt="" width="64" height="62" loading="lazy" decoding="async" /> Tanya Sekarang via WhatsApp <small>→</small></a>
+    <div class="dvn-final-trust dvn-final-trust--right"><span><span aria-hidden="true">♧</span> Konsultasi Gratis</span><span><span aria-hidden="true">▣</span> Bisa COD</span></div>
+  </section>
+
+  <footer class="dvn-footer">
+    <div class="dvn-footer-brand"><div class="dvn-footer-logo">D·V·N</div><div class="dvn-footer-tagline">Kecantikan Sejati<br />Berawal dari Dalam</div></div>
+    <div class="dvn-footer-copy"><nav aria-label="Tautan footer"><SiteFooterLinks separator=" | " /></nav><div>© 2026 DVN X RAYA — penjual DVN Collagen. All rights reserved.</div><div>*Produk ini adalah suplemen kesehatan, bukan obat. Hasil bervariasi tiap orang.</div></div>
+    <div class="dvn-footer-social"><strong aria-hidden="true">◎ ♪ ▶</strong>#CantikDariDalam</div>
+  </footer>
+  </div>
+</div>
+
+<aside class="dvn-floating-chat" data-dvn-chat aria-label="Chat dengan konsultan DVN">
+  <a class="dvn-wa-launcher" href={`${waBase}?cta=floating_wa_direct&msg=${encodeURIComponent('Halo kak, saya ingin tanya tentang DVN Collagen')}`} data-cta="floating_wa_direct">
+    <span class="dvn-wa-launcher__radar" aria-hidden="true"><span class="dvn-wa-launcher__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" decoding="async" /></span></span>
+    <span class="dvn-wa-launcher__copy"><strong>Tanya via WhatsApp</strong><small>CS aktif 24 jam · balas cepat</small></span>
+    <span class="dvn-wa-launcher__icon"><img src="/images/dvn/reference2/icons/whatsapp-64w.webp" alt="" width="64" height="62" /></span>
+  </a>
+  <div class="dvn-chat-widget">
+  <section class="dvn-chat-panel" data-chat-panel aria-labelledby="dvn-chat-title" inert>
+    <header class="dvn-chat-header">
+      <span class="dvn-chat-header__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" loading="lazy" decoding="async" /></span>
+      <span><strong id="dvn-chat-title">Konsultan DVN</strong><small>pesan otomatis · CS aktif 24 jam</small></span>
+      <button class="dvn-chat-close" type="button" data-chat-close><span aria-hidden="true">×</span><span class="dvn-sr-only">Tutup chat</span></button>
+    </header>
+    <div class="dvn-chat-messages" data-chat-messages aria-live="polite">
+      <article class="dvn-chat-message" data-chat-message="0" hidden>
+        <span class="dvn-chat-message__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" loading="lazy" decoding="async" /></span>
+        <div class="dvn-chat-bubble">Halo Bunda! 👋 Saya <strong>Konsultan DVN</strong>, siap bantu cek kebutuhan kulit Bunda.</div>
+      </article>
+      <article class="dvn-chat-message" data-chat-message="1" hidden>
+        <span class="dvn-chat-message__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" loading="lazy" decoding="async" /></span>
+        <div class="dvn-chat-bubble">Bunda ada masalah kulit apa? Ceritakan dulu, kami bantu dengan informasi yang sesuai 😊</div>
+      </article>
+      <article class="dvn-chat-message" data-chat-message="2" hidden>
+        <span class="dvn-chat-message__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" loading="lazy" decoding="async" /></span>
+        <div class="dvn-chat-bubble">Kami punya panduan untuk kulit kusam, kering, dan perawatan harian. Boleh cerita keluhan utamanya?</div>
+      </article>
+      <article class="dvn-chat-message" data-chat-message="3" hidden>
+        <span class="dvn-chat-message__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" loading="lazy" decoding="async" /></span>
+        <div class="dvn-chat-bubble">Konsultasinya gratis dan tersedia opsi <strong>COD — cek produk dulu, baru bayar</strong> 😊</div>
+      </article>
+      <article class="dvn-chat-message dvn-chat-typing" data-chat-typing hidden aria-label="Konsultan sedang mengetik">
+        <span class="dvn-chat-message__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" loading="lazy" decoding="async" /></span>
+        <div class="dvn-chat-bubble"><i></i><i></i><i></i></div>
+      </article>
+    </div>
+    <div class="dvn-chat-actions" data-chat-actions hidden>
+      <a class="dvn-chat-wa" href={waLinks.floating} data-cta="floating_wa"><img src="/images/dvn/reference2/icons/whatsapp-64w.webp" alt="" width="64" height="62" /> Lanjut ke WhatsApp</a>
+      <small class="dvn-chat-privacy"><span>▢</span> Percakapan dilanjutkan secara aman melalui WhatsApp.</small>
+    </div>
+  </section>
+  <button class="dvn-chat-launcher" type="button" aria-label="Buka chat Konsultan DVN" aria-expanded="false" data-chat-launcher>
+    <span class="dvn-chat-launcher__radar" aria-hidden="true"><span class="dvn-chat-launcher__avatar"><img src="/images/dvn/reference2/consultant-white-blazer-128w.webp" alt="" width="128" height="165" decoding="async" /></span></span>
+    <span class="dvn-chat-badge" data-chat-badge hidden>2</span>
+  </button>
+  </div>
+</aside>
+
+<dialog class="dvn-quiz-dialog" id="dvn-skin-quiz" aria-labelledby="dvn-dialog-title">
+  <header><h2 id="dvn-dialog-title">Cek Cocoknya DVN untuk Kulitmu</h2><button class="dvn-quiz-close" type="button" data-quiz-close><span aria-hidden="true">×</span><span class="dvn-sr-only">Tutup kuis</span></button></header>
+  <form class="dvn-quiz-form" method="dialog">
+    <fieldset class="dvn-quiz-question"><legend>1. Kondisi kulit yang paling ingin kamu rawat?</legend><div class="dvn-quiz-options"><label><input type="radio" name="concern" value="kusam" /> Kulit kusam</label><label><input type="radio" name="concern" value="kering" /> Terasa kering</label><label><input type="radio" name="concern" value="garis" /> Garis halus</label><label><input type="radio" name="concern" value="semua" /> Semuanya</label></div></fieldset>
+    <fieldset class="dvn-quiz-question"><legend>2. Rentang usia kamu?</legend><div class="dvn-quiz-options"><label><input type="radio" name="age" value="25-34" /> 25–34 tahun</label><label><input type="radio" name="age" value="35-44" /> 35–44 tahun</label><label><input type="radio" name="age" value="45-54" /> 45–54 tahun</label><label><input type="radio" name="age" value="55+" /> 55+ tahun</label></div></fieldset>
+    <p class="dvn-quiz-summary" data-quiz-summary hidden></p>
+    <a class="dvn-wa-button" data-quiz-result href={`${waBase}?cta=quiz_result&msg=${encodeURIComponent('Halo kak, saya sudah mengisi kuis kulit dan ingin rekomendasi personal DVN')}`} data-cta="quiz_result"><img src="/images/dvn/reference2/icons/whatsapp-64w.webp" alt="" width="64" height="62" loading="lazy" decoding="async" /> Kirim Jawaban ke Konsultan <small>→</small></a>
+  </form>
+</dialog>
+
+<script>
+  // GA4 via Cloudflare Zaraz. zaraz.track() is forwarded to GA4 by the tool's
+  // Automatic Actions ("Events"). No-op when Zaraz is not enabled, and any
+  // failure is swallowed so analytics can never break the page or WA links.
+  const trackEvent = (name, properties = {}) => {
+    try { window.zaraz?.track?.(name, properties); } catch {}
+  };
+
+  const quizDialog = document.querySelector('#dvn-skin-quiz');
+  document.querySelectorAll('[data-quiz-open]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (quizDialog instanceof HTMLDialogElement && !quizDialog.open) {
+        quizDialog.showModal();
+        trackEvent('quiz_open', { quiz_source: button.closest('section')?.className.split(' ')[0] || 'unknown' });
+      }
+    });
+  });
+
+  // SXO-009: the answers go into the WhatsApp message so the consultant sees
+  // them, and a short summary is shown above the button.
+  const quizLabels = {
+    concern: { kusam: 'kulit kusam', kering: 'kulit terasa kering', garis: 'garis halus', semua: 'beberapa keluhan kulit sekaligus' },
+    age: { '25-34': '25–34 tahun', '35-44': '35–44 tahun', '45-54': '45–54 tahun', '55+': '55 tahun ke atas' },
+  };
+  const quizForm = quizDialog?.querySelector('form');
+  const quizSummary = quizDialog?.querySelector('[data-quiz-summary]');
+  const quizResultLink = quizDialog?.querySelector('[data-quiz-result]');
+  const updateQuizResult = () => {
+    if (!(quizForm instanceof HTMLFormElement) || !(quizResultLink instanceof HTMLAnchorElement)) return;
+    const answers = new FormData(quizForm);
+    const concern = quizLabels.concern[answers.get('concern')] || '';
+    const age = quizLabels.age[answers.get('age')] || '';
+    if (!concern && !age) return;
+    const parts = [concern && `keluhan utama saya ${concern}`, age && `usia ${age}`].filter(Boolean);
+    const message = `Halo kak, saya sudah mengisi kuis kulit: ${parts.join(', ')}. Mohon info DVN yang sesuai`;
+    const url = new URL(quizResultLink.href, window.location.origin);
+    url.searchParams.set('msg', message);
+    quizResultLink.href = `${url.pathname}${url.search}`;
+    if (quizSummary instanceof HTMLElement) {
+      quizSummary.textContent = `Jawaban Anda: ${parts.join(' · ')}. Jawaban ini ikut terkirim ke konsultan di WhatsApp.`;
+      quizSummary.hidden = false;
+    }
+  };
+  quizForm?.addEventListener('change', (event) => {
+    const input = event.target;
+    if (input instanceof HTMLInputElement) trackEvent('quiz_answer', { question: input.name, answer: input.value });
+    updateQuizResult();
+  });
+  document.querySelectorAll('[data-quiz-close]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (quizDialog instanceof HTMLDialogElement) quizDialog.close();
+    });
+  });
+  if (quizDialog instanceof HTMLDialogElement) {
+    quizDialog.addEventListener('click', (event) => {
+      if (event.target === quizDialog) quizDialog.close();
+    });
+  }
+
+  const initDeferredDecor = () => {
+    const sections = Array.from(document.querySelectorAll('[data-defer-decor]'));
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach((section) => section.classList.add('is-nearby'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-nearby');
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '350px 0px', threshold: 0 });
+    sections.forEach((section) => observer.observe(section));
+  };
+  if (document.readyState === 'complete') initDeferredDecor();
+  else window.addEventListener('load', initDeferredDecor, { once: true });
+
+  const chatWidget = document.querySelector('[data-dvn-chat]');
+  if (chatWidget instanceof HTMLElement && chatWidget.dataset.ready !== 'true') {
+    chatWidget.dataset.ready = 'true';
+    const panel = chatWidget.querySelector('[data-chat-panel]');
+    const launcher = chatWidget.querySelector('[data-chat-launcher]');
+    const close = chatWidget.querySelector('[data-chat-close]');
+    const messagesBox = chatWidget.querySelector('[data-chat-messages]');
+    const messages = Array.from(chatWidget.querySelectorAll('[data-chat-message]'));
+    const typing = chatWidget.querySelector('[data-chat-typing]');
+    const actions = chatWidget.querySelector('[data-chat-actions]');
+    const badge = chatWidget.querySelector('[data-chat-badge]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let sequence = 0;
+    let continuationPlayed = false;
+    let introComplete = false;
+    let scrollFrame = 0;
+
+    const delay = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+    const scrollMessages = () => {
+      if (!(messagesBox instanceof HTMLElement)) return;
+      window.cancelAnimationFrame(scrollFrame);
+      scrollFrame = window.requestAnimationFrame(() => {
+        const targetScroll = messagesBox.scrollHeight;
+        messagesBox.scrollTop = targetScroll;
+      });
+    };
+    const setOpen = (open) => {
+      chatWidget.classList.toggle('is-open', open);
+      chatWidget.classList.toggle('is-bouncing', !open && introComplete);
+      if (panel instanceof HTMLElement) {
+        panel.toggleAttribute('inert', !open);
+      }
+      if (launcher instanceof HTMLButtonElement) launcher.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open && badge instanceof HTMLElement) badge.hidden = true;
+    };
+    const showMessage = (index) => {
+      const message = messages[index];
+      if (message instanceof HTMLElement) message.hidden = false;
+      scrollMessages();
+    };
+    const showTyping = (show) => {
+      if (typing instanceof HTMLElement) typing.hidden = !show;
+      scrollMessages();
+    };
+    const typeThenReveal = async (index, token, duration = 900) => {
+      showTyping(true);
+      await delay(reducedMotion ? 120 : duration);
+      if (token !== sequence) return false;
+      showTyping(false);
+      showMessage(index);
+      return true;
+    };
+    const playContinuation = async () => {
+      const token = ++sequence;
+      messages.slice(0, 2).forEach((message) => {
+        if (message instanceof HTMLElement) message.hidden = false;
+      });
+      introComplete = true;
+      setOpen(true);
+      scrollMessages();
+      if (continuationPlayed) return;
+      await delay(reducedMotion ? 120 : 420);
+      if (!(await typeThenReveal(2, token, 1050))) return;
+      await delay(reducedMotion ? 100 : 480);
+      if (!(await typeThenReveal(3, token, 1150))) return;
+      continuationPlayed = true;
+      if (actions instanceof HTMLElement) actions.hidden = false;
+      scrollMessages();
+    };
+
+    launcher?.addEventListener('click', () => {
+      if (chatWidget.classList.contains('is-open')) {
+        sequence += 1;
+        showTyping(false);
+        setOpen(false);
+        return;
+      }
+      playContinuation();
+      trackEvent('chat_open');
+    });
+    close?.addEventListener('click', () => {
+      sequence += 1;
+      showTyping(false);
+      setOpen(false);
+    });
+
+    // Attention cue only: the panel never opens by itself (it used to open on
+    // the first scroll and cover ~30% of a phone screen). It opens only when
+    // the visitor taps the launcher.
+    const showLauncherCue = () => {
+      introComplete = true;
+      chatWidget.classList.add('is-bouncing');
+      if (badge instanceof HTMLElement) badge.hidden = false;
+    };
+    if (document.readyState === 'complete') showLauncherCue();
+    else window.addEventListener('load', showLauncherCue, { once: true });
+  }
+
+  const query = new URLSearchParams(window.location.search);
+  const attributionKeys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  attributionKeys.forEach((key) => {
+    const value = query.get(key);
+    if (value) sessionStorage.setItem(`dvn_${key}`, value);
+  });
+
+  document.querySelectorAll('a[href^="/api/wa"]').forEach((link) => {
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const url = new URL(link.href, window.location.origin);
+    url.searchParams.set('from', window.location.pathname);
+    attributionKeys.forEach((key) => {
+      const value = query.get(key) || sessionStorage.getItem(`dvn_${key}`);
+      if (value) url.searchParams.set(key, value);
+    });
+    link.href = `${url.pathname}${url.search}`;
+    // Best effort: the page navigates to /api/wa immediately. The reliable
+    // wa_click record (with ref code) is still the server-side GAS log.
+    link.addEventListener('click', () => trackEvent('wa_click', { cta: link.dataset.cta || 'unknown' }));
+  });
+
+  document.querySelectorAll('.hero-jump-link').forEach((link) => {
+    link.addEventListener('click', () => trackEvent('jump_nav_click', { target: link.getAttribute('href') || '' }));
+  });
+  document.querySelectorAll('.dvn-faq details').forEach((item) => {
+    item.addEventListener('toggle', () => {
+      if (item instanceof HTMLDetailsElement && item.open) trackEvent('faq_open', { question: item.querySelector('summary')?.textContent?.trim() || '' });
+    });
+  });
+  document.querySelectorAll('a[href^="https://cekbpom.pom.go.id"], a[href^="https://www.wellous.com/"]').forEach((link) => {
+    link.addEventListener('click', () => trackEvent('verification_link_click', { destination: new URL(link.href).hostname }));
+  });
+  // GA4 via Zaraz has no automatic scroll tracking.
+  const scrollMarks = [50, 90];
+  const reachedMarks = new Set();
+  const checkScrollDepth = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollable <= 0) return;
+    const percent = (window.scrollY / scrollable) * 100;
+    scrollMarks.forEach((mark) => {
+      if (percent >= mark && !reachedMarks.has(mark)) {
+        reachedMarks.add(mark);
+        trackEvent('scroll_depth', { percent: mark });
+      }
+    });
+    if (reachedMarks.size === scrollMarks.length) window.removeEventListener('scroll', checkScrollDepth);
+  };
+  window.addEventListener('scroll', checkScrollDepth, { passive: true });
+
+  const sendDeferredPageview = () => {
+    const pageviewParams = new URLSearchParams({ event: 'page_view', landing_page: window.location.href });
+    attributionKeys.forEach((key) => {
+      const value = query.get(key) || sessionStorage.getItem(`dvn_${key}`);
+      if (value) pageviewParams.set(key, value);
+    });
+    const pageview = new Image();
+    pageview.src = `/api/track?${pageviewParams.toString()}`;
+  };
+  const schedulePageview = () => {
+    window.setTimeout(() => {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(sendDeferredPageview, { timeout: 1800 });
+      else sendDeferredPageview();
+    }, 1200);
+  };
+  if (document.readyState === 'complete') schedulePageview();
+  else window.addEventListener('load', schedulePageview, { once: true });
+</script>
